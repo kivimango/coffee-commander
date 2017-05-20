@@ -5,6 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 
 public class Main extends Application {
 
@@ -14,8 +16,13 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        primaryStage.setTitle(APP_TITLE + APP_VERSION);
-        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setTitle(APP_TITLE + " " + APP_VERSION);
+
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int width = (int) (screenSize.width * 0.75);
+        int height = (int) ((screenSize.height * 0.75));
+        primaryStage.setScene(new Scene(root, width, height));
+
         primaryStage.show();
     }
 
