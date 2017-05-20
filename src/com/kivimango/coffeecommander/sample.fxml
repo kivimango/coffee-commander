@@ -1,6 +1,5 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.Menu?>
@@ -9,11 +8,14 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
 
 <BorderPane
-            xmlns:fx="http://javafx.com/fxml" fx:id="borderPane" fx:controller="com.kivimango.coffeecommander.controllers.DirectoryBrowserController">
+            xmlns:fx="http://javafx.com/fxml" fx:controller="com.kivimango.coffeecommander.controllers.DirectoryBrowserController">
     <top>
-        <VBox id="vbox"
+        <VBox
               xmlns:fx="http://javafx.com/fxml">
             <MenuBar fx:id="menuBar">
                 <menus>
@@ -33,28 +35,51 @@
     </top>
     <center>
         <SplitPane>
-                <TableView fx:id="leftTable">
-                    <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                    </columnResizePolicy>
-                    <columns>
-                        <TableColumn fx:id="leftIconCol" text="Icon"/>
-                        <TableColumn fx:id="leftFileNameCol" text="Filename"/>
-                        <TableColumn fx:id="leftSizeCol" text="Size"/>
-                        <TableColumn fx:id="leftDateCol" text="Date"/>
-                    </columns>
-                </TableView>
-                <TableView fx:id="rightTable">
-                    <columnResizePolicy>
-                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
-                    </columnResizePolicy>
+            <VBox>
+                <children>
+                    <ComboBox fx:id="leftDriveList" promptText="Drives" onCha>
+                    </ComboBox>
+                </children>
+                <children>
+                    <TableView fx:id="leftTable">
+                        <columnResizePolicy>
+                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                        </columnResizePolicy>
+                        <columns>
+                            <TableColumn fx:id="leftIconCol" text="Icon"/>
+                            <TableColumn fx:id="leftFileNameCol" text="Filename"/>
+                            <TableColumn fx:id="leftSizeCol" text="Size"/>
+                            <TableColumn fx:id="leftDateCol" text="Date"/>
+                        </columns>
+                    </TableView>
+                </children>
+            </VBox>
+            <VBox>
+                <children>
+                    <ComboBox fx:id="rightDriveList" promptText="Drives">
+                        <items>
+                            <FXCollections fx:factory="observableArrayList">
+                                <String fx:value="Apple" />
+                                <String fx:value="Orange" />
+                                <String fx:value="Pear" />
+                            </FXCollections>
+                        </items>
+                    </ComboBox>
+                </children>
+                <children>
+                    <TableView fx:id="rightTable">
+                        <columnResizePolicy>
+                            <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                        </columnResizePolicy>
                         <columns>
                             <TableColumn fx:id="rightIconCol" text="Icon"/>
                             <TableColumn fx:id="rightFileNameCol" text="Filename"/>
                             <TableColumn fx:id="rightSizeCol" text="Size"/>
                             <TableColumn fx:id="rightDateCol" text="Date"/>
                         </columns>
-                </TableView>
+                    </TableView>
+                </children>
+            </VBox>
         </SplitPane>
     </center>
     <bottom>

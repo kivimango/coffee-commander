@@ -4,31 +4,18 @@ import com.kivimango.coffeecommander.model.CoffeeFile;
 import com.kivimango.coffeecommander.model.FileSystemDAO;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.VBox;
 import java.io.File;
 import java.net.URL;
 import java.util.Date;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class DirectoryBrowserController implements Initializable{
-
-    @FXML
-    public BorderPane borderPane;
-
-    @FXML
-    public VBox leftPane;
-
-    @FXML
-    public VBox rightPane;
 
     @FXML
     public MenuBar menuBar;
@@ -56,10 +43,18 @@ public class DirectoryBrowserController implements Initializable{
 
     @FXML
     public TableColumn<CoffeeFile, String> rightFileNameCol;
+
     @FXML
     public TableColumn<CoffeeFile, Long> rightSizeCol;
+
     @FXML
     public TableColumn<CoffeeFile, Date> rightDateCol;
+
+    @FXML
+    public ComboBox leftDriveList;
+
+    @FXML
+    public ComboBox rightDriveList;
 
     private FileSystemDAO model = new FileSystemDAO();
 
@@ -120,5 +115,9 @@ public class DirectoryBrowserController implements Initializable{
 
         leftTable.getItems().setAll(model.getDirectoryContent(new File("/")));
         rightTable.getItems().setAll(model.getDirectoryContent(new File("/")));
+
+        List<File> drives = model.getDrives();
+        leftDriveList.getItems().setAll((drives));
+        rightDriveList.getItems().setAll(drives);
     }
 }
