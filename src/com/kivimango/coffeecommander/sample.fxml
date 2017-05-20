@@ -34,6 +34,9 @@
     <center>
         <SplitPane>
                 <TableView fx:id="leftTable">
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                    </columnResizePolicy>
                     <columns>
                         <TableColumn fx:id="leftFileNameCol" text="Filename"/>
                         <TableColumn fx:id="leftSizeCol" text="Size"/>
@@ -41,6 +44,9 @@
                     </columns>
                 </TableView>
                 <TableView fx:id="rightTable">
+                    <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                    </columnResizePolicy>
                         <columns>
                             <TableColumn fx:id="rightFileNameCol" text="Filename"/>
                             <TableColumn fx:id="rightSizeCol" text="Size"/>
