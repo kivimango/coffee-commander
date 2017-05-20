@@ -38,6 +38,7 @@
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                     </columnResizePolicy>
                     <columns>
+                        <TableColumn fx:id="leftIconCol" text="Icon"/>
                         <TableColumn fx:id="leftFileNameCol" text="Filename"/>
                         <TableColumn fx:id="leftSizeCol" text="Size"/>
                         <TableColumn fx:id="leftDateCol" text="Date"/>
@@ -48,6 +49,7 @@
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                     </columnResizePolicy>
                         <columns>
+                            <TableColumn fx:id="rightIconCol" text="Icon"/>
                             <TableColumn fx:id="rightFileNameCol" text="Filename"/>
                             <TableColumn fx:id="rightSizeCol" text="Size"/>
                             <TableColumn fx:id="rightDateCol" text="Date"/>
