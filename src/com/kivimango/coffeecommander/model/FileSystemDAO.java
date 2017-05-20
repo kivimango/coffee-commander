@@ -7,6 +7,7 @@ import java.util.List;
 
 public class FileSystemDAO {
 
+    FileIconConverter iconConverter = new FileIconConverter();
     List<CoffeeFile> directoryContent = new ArrayList<>();
 
     public FileSystemDAO() {
@@ -19,9 +20,8 @@ public class FileSystemDAO {
 
         File[] content = path.listFiles();
         for(File f: content) {
-            directoryContent.add(new CoffeeFile(f.getName(), f.length(), new Date(f.lastModified())));
+            directoryContent.add(new CoffeeFile(iconConverter.convert(f), f.getName(), f.length(), new Date(f.lastModified())));
         }
         return directoryContent;
     }
-
 }
