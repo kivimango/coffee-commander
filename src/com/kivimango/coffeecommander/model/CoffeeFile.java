@@ -1,17 +1,28 @@
 package com.kivimango.coffeecommander.model;
 
+import javafx.scene.image.Image;
 import java.util.Date;
 
 public class CoffeeFile {
 
+    private Image icon;
     private String name;
     private long size;
     private Date date;
 
-    public CoffeeFile(String name, long size, Date date) {
+    public CoffeeFile(Image icon, String name, long size, Date date) {
+        this.icon = icon;
         this.name = name;
         this.size = size;
         this.date = date;
+    }
+
+    public Image getIcon() {
+        return icon;
+    }
+
+    public void setIcon(Image icon) {
+        this.icon = icon;
     }
 
     public String getName() {
