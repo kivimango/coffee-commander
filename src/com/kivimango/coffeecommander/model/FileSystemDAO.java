@@ -2,7 +2,6 @@ package com.kivimango.coffeecommander.model;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -26,7 +25,11 @@ public class FileSystemDAO {
         return directoryContent;
     }
 
-    public List<File> getDrives() {
-        return Arrays.asList(File.listRoots());
+    public List<String> getDrives() {
+        List<String> drives = new ArrayList<>();
+       for(File f : File.listRoots()) {
+           drives.add(f.getAbsolutePath());
+       }
+       return  drives;
     }
 }

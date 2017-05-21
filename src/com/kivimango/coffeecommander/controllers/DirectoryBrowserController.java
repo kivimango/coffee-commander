@@ -2,9 +2,14 @@ package com.kivimango.coffeecommander.controllers;
 
 import com.kivimango.coffeecommander.model.CoffeeFile;
 import com.kivimango.coffeecommander.model.FileSystemDAO;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -51,10 +56,10 @@ public class DirectoryBrowserController implements Initializable{
     public TableColumn<CoffeeFile, Date> rightDateCol;
 
     @FXML
-    public ComboBox leftDriveList;
+    public ComboBox<String> leftDriveList;
 
     @FXML
-    public ComboBox rightDriveList;
+    public ComboBox<String> rightDriveList;
 
     private FileSystemDAO model = new FileSystemDAO();
 
@@ -116,8 +121,43 @@ public class DirectoryBrowserController implements Initializable{
         leftTable.getItems().setAll(model.getDirectoryContent(new File("/")));
         rightTable.getItems().setAll(model.getDirectoryContent(new File("/")));
 
-        List<File> drives = model.getDrives();
+        List<String> drives = model.getDrives();
         leftDriveList.getItems().setAll((drives));
         rightDriveList.getItems().setAll(drives);
+    }
+
+    @FXML
+    public void handleMouseClickOnTables() {
+
+    }
+
+    /**
+     * Loading the files and folders of the selected drive's root folder, than refreshing the table with the result.
+     * @param event
+     * @version 1.0
+     * @since 0.1
+     */
+
+    @FXML
+    public void handleLeftComboBoxChangeEvent(ActionEvent event) {
+        String selectedDrive = leftDriveList.getValue();
+       refreshTable(leftTable, selectedDrive);
+    }
+
+    @FXML
+    public void handleRightComboBoxChangeEvent(ActionEvent event) {
+        String selectedDrive = rightDriveList.getValue();
+        refreshTable(rightTable, selectedDrive);
+    }
+
+    /**
+     * Method to avoid code duplication: refreshing the table that passed as a parameter
+     * @param table Table to refresh e.g.: lefTable or rightTable
+     * @param path The path of the selected drive's root folder
+     */
+
+    private void refreshTable( TableView<CoffeeFile> table, String path) {
+        table.getItems().setAll(model.getDirectoryContent(new File(path)));
+        table.refresh();
     }
 }
