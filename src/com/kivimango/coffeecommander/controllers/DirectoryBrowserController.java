@@ -1,16 +1,12 @@
 package com.kivimango.coffeecommander.controllers;
 
+import com.kivimango.coffeecommander.Main;
 import com.kivimango.coffeecommander.model.CoffeeFile;
 import com.kivimango.coffeecommander.model.FileSystemDAO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -193,6 +189,19 @@ public class DirectoryBrowserController implements Initializable{
         alert.setTitle("Cannot run file!");
         alert.setHeaderText(null);
         alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    @FXML
+    public void showAboutDialog() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("About " + Main.APP_TITLE);
+        alert.setHeaderText(Main.APP_TITLE + " is a free, platform-independent file manager application.\n" +
+                "Author: kivimango\n" +
+                "Version: " + Main.APP_VERSION);
+        alert.setContentText("Thank you for using this software.\n" +
+        "Please report bugs and issues on the following site: \n" +
+                "https://github.com/kivimango/coffee-commander/issues");
         alert.showAndWait();
     }
 }

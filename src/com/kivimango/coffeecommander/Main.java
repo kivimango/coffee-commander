@@ -10,8 +10,8 @@ import java.awt.Toolkit;
 
 public class Main extends Application {
 
-    private static final String APP_TITLE = "Coffee Commander";
-    private static final String APP_VERSION = "0.1";
+    public static final String APP_TITLE = "Coffee Commander";
+    public static final String APP_VERSION = "0.1";
 
     @Override
     public void start(Stage primaryStage) throws Exception{
