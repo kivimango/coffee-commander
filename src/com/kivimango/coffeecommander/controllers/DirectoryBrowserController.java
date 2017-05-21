@@ -3,6 +3,8 @@ package com.kivimango.coffeecommander.controllers;
 import com.kivimango.coffeecommander.Main;
 import com.kivimango.coffeecommander.model.CoffeeFile;
 import com.kivimango.coffeecommander.model.FileSystemDAO;
+import com.kivimango.coffeecommander.util.WindowsShortcutResolver;
+import com.sun.javafx.PlatformUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -15,6 +17,7 @@ import javafx.scene.input.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -82,54 +85,52 @@ public class DirectoryBrowserController implements Initializable{
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         leftIconCol.setCellValueFactory(new PropertyValueFactory<>("icon"));
-        leftIconCol.setCellFactory(column -> {
-            return new TableCell<CoffeeFile, Image>() {
-                @Override
-                protected void updateItem(Image image, boolean empty) {
-                    super.updateItem(image, empty);
-                    if(image!=null) {
-                        ImageView imageview = new ImageView();
-                        imageview.setImage(image);
-                        setGraphic(imageview);
-                    }
+        leftIconCol.setCellFactory(column -> new TableCell<CoffeeFile, Image>() {
+            @Override
+            protected void updateItem(Image image, boolean empty) {
+                super.updateItem(image, empty);
+                if(image!=null) {
+                    ImageView imageview = new ImageView();
+                    imageview.setImage(image);
+                    setGraphic(imageview);
                 }
-            };
+            }
         });
         leftFileNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         leftSizeCol.setCellValueFactory(new PropertyValueFactory<>("size"));
         leftDateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
 
-        rightIconCol.setCellFactory(column -> {
-            return new TableCell<CoffeeFile, Image>() {
-                @Override
-                protected void updateItem(Image image, boolean empty) {
-                    super.updateItem(image, empty);
-                    if(image!=null) {
-                        ImageView imageview = new ImageView();
-                        imageview.setImage(image);
-                        setGraphic(imageview);
-                    }
+        rightIconCol.setCellFactory(column -> new TableCell<CoffeeFile, Image>() {
+            @Override
+            protected void updateItem(Image image, boolean empty) {
+                super.updateItem(image, empty);
+                if(image!=null) {
+                    ImageView imageview = new ImageView();
+                    imageview.setImage(image);
+                    setGraphic(imageview);
                 }
-            };
+            }
         });
         rightIconCol.setCellValueFactory(new PropertyValueFactory<>("icon"));
         rightFileNameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
         rightSizeCol.setCellValueFactory(new PropertyValueFactory<>("size"));
         rightDateCol.setCellValueFactory(new PropertyValueFactory<>("date"));
 
-        leftTable.getItems().setAll(model.getDirectoryContent(new File("/")));
-        rightTable.getItems().setAll(model.getDirectoryContent(new File("/")));
-
         List<String> drives = model.getDrives();
         leftDriveList.getItems().setAll((drives));
         rightDriveList.getItems().setAll(drives);
+
+        leftTable.getItems().setAll(model.getDirectoryContent(new File(drives.get(0))));
+        rightTable.getItems().setAll(model.getDirectoryContent(new File(drives.get(0))));
     }
 
     @FXML
     public void handleMouseClickOnLeftTable(MouseEvent mouseEvent) {
         if(mouseEvent.getClickCount() == 2) {
             CoffeeFile selectedRow = leftTable.getSelectionModel().getSelectedItem();
-            handleMouseClickOnTables(leftTable, selectedRow);
+            if(selectedRow != null) {
+                handleMouseClickOnTables(leftTable, selectedRow);
+            } else return;
         }
     }
 
@@ -137,7 +138,9 @@ public class DirectoryBrowserController implements Initializable{
     public void handleMouseClickOnRightTable(MouseEvent mouseEvent) {
         if(mouseEvent.getClickCount() == 2) {
             CoffeeFile selectedRow = rightTable.getSelectionModel().getSelectedItem();
-            handleMouseClickOnTables(rightTable, selectedRow);
+            if(selectedRow != null) {
+                handleMouseClickOnTables(rightTable, selectedRow);
+            } else return;
         }
     }
 
@@ -145,13 +148,31 @@ public class DirectoryBrowserController implements Initializable{
         File selectedFile = new File(selectedRow.getPath());
         if(selectedFile.isDirectory()) {
             refreshTable(tableToUpdate, selectedFile.getAbsolutePath());
-        } else {
-            try{
-                model.openFileWithAssociatedProgram(selectedFile);
-            } catch (IOException e) {
-                showAlertDialog(e.getLocalizedMessage());
-            }
+        } else if((PlatformUtil.isWindows() || PlatformUtil.isWin7OrLater()) && selectedRow.getName().endsWith(".lnk")) {
+            parseWindowsLnk(selectedFile);
+        } else try {
+            model.openFileWithAssociatedProgram(selectedFile);
+        } catch (IOException e) {
+            showAlertDialog(e.getLocalizedMessage());
         }
+    }
+
+    private void parseWindowsLnk(File selectedFile) {
+            try {
+                if(WindowsShortcutResolver.isPotentialValidLink(selectedFile)) {
+                    try {
+                        WindowsShortcutResolver lr = new WindowsShortcutResolver(selectedFile);
+                        System.out.print(lr.getRealFilename());
+                        refreshTable(leftTable, lr.getRealFilename());
+                    } catch (IOException e) {
+                       showAlertDialog(e.getLocalizedMessage());
+                    }
+                }
+            } catch (ParseException e1) {
+                showAlertDialog(e1.getLocalizedMessage());
+            } catch (IOException e2) {
+                showAlertDialog(e2.getLocalizedMessage());
+            }
     }
 
     /**
