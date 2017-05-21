@@ -1,6 +1,6 @@
 package com.kivimango.coffeecommander.model;
 
-import java.awt.*;
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ public class FileSystemDAO {
 
     private FileIconConverter iconConverter = new FileIconConverter();
     private List<CoffeeFile> directoryContent = new ArrayList<>();
-    Desktop desktop = Desktop.getDesktop();
+    private Desktop desktop = Desktop.getDesktop();
 
     public FileSystemDAO() {
     }
@@ -29,9 +29,13 @@ public class FileSystemDAO {
             directoryContent.clear();
         }
 
-        File[] content = path.listFiles(new HiddenFileFilter());
-        for(File f: content) {
-            directoryContent.add(new CoffeeFile(iconConverter.convert(f), f.getName(), f.length(), new Date(f.lastModified()), f.getAbsolutePath()));
+        if(path.isDirectory()) {
+            File[] content = path.listFiles(new HiddenFileFilter());
+            if(content != null) {
+                for(File f: content) {
+                    directoryContent.add(new CoffeeFile(iconConverter.convert(f), f.getName(), f.length(), new Date(f.lastModified()), f.getAbsolutePath()));
+                }
+            }
         }
         return directoryContent;
     }
