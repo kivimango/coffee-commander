@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -22,6 +23,8 @@ public class Main extends Application {
         int width = (int) (screenSize.width * 0.75);
         int height = (int) ((screenSize.height * 0.75));
         primaryStage.setScene(new Scene(root, width, height));
+
+        primaryStage.getIcons().add( new Image( Main.class.getResourceAsStream( "icon.png" )));
 
         primaryStage.show();
     }
