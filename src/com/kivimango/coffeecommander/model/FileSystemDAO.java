@@ -29,7 +29,7 @@ public class FileSystemDAO {
             directoryContent.clear();
         }
 
-        File[] content = path.listFiles();
+        File[] content = path.listFiles(new HiddenFileFilter());
         for(File f: content) {
             directoryContent.add(new CoffeeFile(iconConverter.convert(f), f.getName(), f.length(), new Date(f.lastModified()), f.getAbsolutePath()));
         }
