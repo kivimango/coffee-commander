@@ -9,12 +9,14 @@ public class CoffeeFile {
     private String name;
     private long size;
     private Date date;
+    private String path;
 
-    public CoffeeFile(Image icon, String name, long size, Date date) {
+    public CoffeeFile(Image icon, String name, long size, Date date, String path) {
         this.icon = icon;
         this.name = name;
         this.size = size;
         this.date = date;
+        this.path = path;
     }
 
     public Image getIcon() {
@@ -47,5 +49,13 @@ public class CoffeeFile {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
     }
 }

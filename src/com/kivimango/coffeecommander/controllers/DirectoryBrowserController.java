@@ -5,16 +5,15 @@ import com.kivimango.coffeecommander.model.FileSystemDAO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
@@ -126,9 +125,24 @@ public class DirectoryBrowserController implements Initializable{
         rightDriveList.getItems().setAll(drives);
     }
 
-    @FXML
-    public void handleMouseClickOnTables() {
-
+    public void handleMouseClickOnLeftTable(MouseEvent mouseEvent) {
+        if(mouseEvent.getClickCount() == 2) {
+            CoffeeFile selectedRow = leftTable.getSelectionModel().getSelectedItem();
+            File selectedFile = new File(selectedRow.getPath());
+            if(selectedFile.isDirectory()) {
+                refreshTable(leftTable, selectedFile.getAbsolutePath());
+            } else {
+                try{
+                    model.openFileWithAssociatedProgram(selectedFile);
+                } catch (IOException e) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Cannot run file!");
+                    alert.setHeaderText(null);
+                    alert.setContentText(e.getLocalizedMessage());
+                    alert.showAndWait();
+                }
+            }
+        }
     }
 
     /**

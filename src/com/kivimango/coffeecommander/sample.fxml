@@ -39,7 +39,7 @@
                     </ComboBox>
                 </children>
                 <children>
-                    <TableView fx:id="leftTable">
+                    <TableView fx:id="leftTable" onMouseClicked="#handleMouseClickOnLeftTable">
                         <columnResizePolicy>
                             <TableView fx:constant="UNCONSTRAINED_RESIZE_POLICY" />
                         </columnResizePolicy>
