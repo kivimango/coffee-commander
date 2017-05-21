@@ -5,13 +5,17 @@ import com.kivimango.coffeecommander.model.FileSystemDAO;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -125,22 +129,31 @@ public class DirectoryBrowserController implements Initializable{
         rightDriveList.getItems().setAll(drives);
     }
 
+    @FXML
     public void handleMouseClickOnLeftTable(MouseEvent mouseEvent) {
         if(mouseEvent.getClickCount() == 2) {
             CoffeeFile selectedRow = leftTable.getSelectionModel().getSelectedItem();
-            File selectedFile = new File(selectedRow.getPath());
-            if(selectedFile.isDirectory()) {
-                refreshTable(leftTable, selectedFile.getAbsolutePath());
-            } else {
-                try{
-                    model.openFileWithAssociatedProgram(selectedFile);
-                } catch (IOException e) {
-                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
-                    alert.setTitle("Cannot run file!");
-                    alert.setHeaderText(null);
-                    alert.setContentText(e.getLocalizedMessage());
-                    alert.showAndWait();
-                }
+            handleMouseClickOnTables(leftTable, selectedRow);
+        }
+    }
+
+    @FXML
+    public void handleMouseClickOnRightTable(MouseEvent mouseEvent) {
+        if(mouseEvent.getClickCount() == 2) {
+            CoffeeFile selectedRow = rightTable.getSelectionModel().getSelectedItem();
+            handleMouseClickOnTables(rightTable, selectedRow);
+        }
+    }
+
+    private void handleMouseClickOnTables(TableView<CoffeeFile> tableToUpdate, CoffeeFile selectedRow) {
+        File selectedFile = new File(selectedRow.getPath());
+        if(selectedFile.isDirectory()) {
+            refreshTable(tableToUpdate, selectedFile.getAbsolutePath());
+        } else {
+            try{
+                model.openFileWithAssociatedProgram(selectedFile);
+            } catch (IOException e) {
+                showAlertDialog(e.getLocalizedMessage());
             }
         }
     }
@@ -173,5 +186,13 @@ public class DirectoryBrowserController implements Initializable{
     private void refreshTable( TableView<CoffeeFile> table, String path) {
         table.getItems().setAll(model.getDirectoryContent(new File(path)));
         table.refresh();
+    }
+
+    private void showAlertDialog(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Cannot run file!");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }
