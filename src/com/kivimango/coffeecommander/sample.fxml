@@ -11,6 +11,8 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 
+<?import javafx.scene.layout.HBox?>
+<?import javafx.geometry.Insets?>
 <BorderPane
             xmlns:fx="http://javafx.com/fxml" fx:controller="com.kivimango.coffeecommander.controllers.DirectoryBrowserController">
     <top>
@@ -35,13 +37,24 @@
     <center>
         <SplitPane>
             <VBox>
+                <padding>
+                    <Insets top="5" bottom="5" left="5" right="5"></Insets>
+                </padding>
                 <children>
-                    <ComboBox fx:id="leftDriveList" promptText="Drives" onAction="#handleLeftComboBoxChangeEvent">
-                    </ComboBox>
-                    <Button fx:id="leftUpButton" text="Up" onMouseClicked="#handleLeftUpButtonEvent">
-                    </Button>
-                    <Button fx:id="leftRefreshButton" text="Refresh" onMouseClicked="#handleLeftRefreshButtonEvent">
-                    </Button>
+                    <HBox spacing="5">
+                        <children>
+                            <ComboBox fx:id="leftDriveList" promptText="Drives" onAction="#handleLeftComboBoxChangeEvent">
+                            </ComboBox>
+                        </children>
+                        <children>
+                            <Button fx:id="leftUpButton" text="Up" onMouseClicked="#handleLeftUpButtonEvent">
+                            </Button>
+                        </children>
+                        <children>
+                            <Button fx:id="leftRefreshButton" text="Refresh" onMouseClicked="#handleLeftRefreshButtonEvent">
+                            </Button>
+                        </children>
+                    </HBox>
                 </children>
                 <children>
                     <Label fx:id="leftPathLabel" text=""></Label>
@@ -61,13 +74,25 @@
                 </children>
             </VBox>
             <VBox>
+                <padding>
+                    <Insets top="5" bottom="5" left="5" right="5"></Insets>
+                </padding>
                 <children>
-                    <ComboBox fx:id="rightDriveList" promptText="Drives" onAction="#handleRightComboBoxChangeEvent">
-                    </ComboBox>
-                    <Button fx:id="rightUpButton" text="Up" onMouseClicked="#handleRightUpButtonEvent">
-                    </Button>
-                    <Button fx:id="rightRefreshButton" text="Refresh" onMouseClicked="#handleRightRefreshButtonEvent">
-                    </Button>
+                    <HBox spacing="5">
+                        <children>
+                            <ComboBox fx:id="rightDriveList" promptText="Drives" onAction="#handleRightComboBoxChangeEvent">
+                            </ComboBox>
+                        </children>
+                        <children>
+                            <Button fx:id="rightUpButton" text="Up" onMouseClicked="#handleRightUpButtonEvent">
+                            </Button>
+                        </children>
+                        <children>
+
+                            <Button fx:id="rightRefreshButton" text="Refresh" onMouseClicked="#handleRightRefreshButtonEvent">
+                            </Button>
+                        </children>
+                    </HBox>
                 </children>
                 <children>
                     <Label fx:id="rightPathLabel" text=""></Label>
