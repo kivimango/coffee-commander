@@ -9,6 +9,7 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
 
 <BorderPane
             xmlns:fx="http://javafx.com/fxml" fx:controller="com.kivimango.coffeecommander.controllers.DirectoryBrowserController">
@@ -39,6 +40,9 @@
                     </ComboBox>
                 </children>
                 <children>
+                    <Label fx:id="leftPathLabel" text=""></Label>
+                </children>
+                <children>
                     <TableView fx:id="leftTable" onMouseClicked="#handleMouseClickOnLeftTable">
                         <columnResizePolicy>
                             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -56,6 +60,9 @@
                 <children>
                     <ComboBox fx:id="rightDriveList" promptText="Drives" onAction="#handleRightComboBoxChangeEvent">
                     </ComboBox>
+                </children>
+                <children>
+                    <Label fx:id="rightPathLabel" text=""></Label>
                 </children>
                 <children>
                     <TableView fx:id="rightTable" onMouseClicked="#handleMouseClickOnRightTable">

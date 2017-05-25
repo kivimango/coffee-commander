@@ -63,6 +63,12 @@ public class DirectoryBrowserController implements Initializable{
     @FXML
     public ComboBox<String> rightDriveList;
 
+    @FXML
+    public Label leftPathLabel;
+
+    @FXML
+    public Label rightPathLabel;
+
     private FileSystemDAO model = new FileSystemDAO();
 
     public DirectoryBrowserController() {
@@ -120,8 +126,13 @@ public class DirectoryBrowserController implements Initializable{
         leftDriveList.getItems().setAll((drives));
         rightDriveList.getItems().setAll(drives);
 
-        leftTable.getItems().setAll(model.getDirectoryContent(new File(drives.get(0))));
-        rightTable.getItems().setAll(model.getDirectoryContent(new File(drives.get(0))));
+        File firstRoot = new File(drives.get(0));
+
+        leftTable.getItems().setAll(model.getDirectoryContent(firstRoot));
+        rightTable.getItems().setAll(model.getDirectoryContent(firstRoot));
+
+        leftPathLabel.setText(firstRoot.getAbsolutePath());
+        rightPathLabel.setText(firstRoot.getAbsolutePath());
     }
 
     @FXML
@@ -130,6 +141,7 @@ public class DirectoryBrowserController implements Initializable{
             CoffeeFile selectedRow = leftTable.getSelectionModel().getSelectedItem();
             if(selectedRow != null) {
                 handleMouseClickOnTables(leftTable, selectedRow);
+                leftPathLabel.setText(selectedRow.getPath());
             } else return;
         }
     }
@@ -140,6 +152,7 @@ public class DirectoryBrowserController implements Initializable{
             CoffeeFile selectedRow = rightTable.getSelectionModel().getSelectedItem();
             if(selectedRow != null) {
                 handleMouseClickOnTables(rightTable, selectedRow);
+                rightPathLabel.setText(selectedRow.getPath());
             } else return;
         }
     }
