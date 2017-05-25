@@ -13,6 +13,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.geometry.Insets?>
 
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
 <BorderPane
             xmlns:fx="http://javafx.com/fxml" fx:controller="com.kivimango.coffeecommander.controllers.DirectoryBrowserController">
     <top>
@@ -47,11 +49,25 @@
                             </ComboBox>
                         </children>
                         <children>
-                            <Button fx:id="leftUpButton" text="Up" onMouseClicked="#handleLeftUpButtonEvent">
+                            <Button fx:id="leftUpButton" onMouseClicked="#handleLeftUpButtonEvent">
+                                <graphic>
+                                    <ImageView>
+                                        <image>
+                                            <Image url="/main/resources/icons/return-16x16.png"></Image>
+                                        </image>
+                                    </ImageView>
+                                </graphic>
                             </Button>
                         </children>
                         <children>
-                            <Button fx:id="leftRefreshButton" text="Refresh" onMouseClicked="#handleLeftRefreshButtonEvent">
+                            <Button fx:id="leftRefreshButton" onMouseClicked="#handleLeftRefreshButtonEvent">
+                                <graphic>
+                                    <ImageView>
+                                        <image>
+                                            <Image url="/main/resources/icons/refresh-16x16.png"></Image>
+                                        </image>
+                                    </ImageView>
+                                </graphic>
                             </Button>
                         </children>
                     </HBox>
@@ -84,12 +100,26 @@
                             </ComboBox>
                         </children>
                         <children>
-                            <Button fx:id="rightUpButton" text="Up" onMouseClicked="#handleRightUpButtonEvent">
+                            <Button fx:id="rightUpButton" onMouseClicked="#handleRightUpButtonEvent">
+                                <graphic>
+                                    <ImageView>
+                                        <image>
+                                            <Image url="/main/resources/icons/return-16x16.png"></Image>
+                                        </image>
+                                    </ImageView>
+                                </graphic>
                             </Button>
                         </children>
                         <children>
 
-                            <Button fx:id="rightRefreshButton" text="Refresh" onMouseClicked="#handleRightRefreshButtonEvent">
+                            <Button fx:id="rightRefreshButton" onMouseClicked="#handleRightRefreshButtonEvent">
+                                <graphic>
+                                    <ImageView>
+                                        <image>
+                                            <Image url="/main/resources/icons/refresh-16x16.png"></Image>
+                                        </image>
+                                    </ImageView>
+                                </graphic>
                             </Button>
                         </children>
                     </HBox>
