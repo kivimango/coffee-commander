@@ -15,6 +15,7 @@
 
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
+<?import javafx.scene.control.Tooltip?>
 <BorderPane
             xmlns:fx="http://javafx.com/fxml" fx:controller="com.kivimango.coffeecommander.controllers.DirectoryBrowserController">
     <top>
@@ -46,6 +47,9 @@
                     <HBox spacing="5">
                         <children>
                             <ComboBox fx:id="leftDriveList" promptText="Drives" onAction="#handleLeftComboBoxChangeEvent">
+                                <tooltip>
+                                    <Tooltip text="Show the list of available drives" />
+                                </tooltip>
                             </ComboBox>
                         </children>
                         <children>
@@ -57,6 +61,9 @@
                                         </image>
                                     </ImageView>
                                 </graphic>
+                                <tooltip>
+                                    <Tooltip text="Back to the parent directory" />
+                                </tooltip>
                             </Button>
                         </children>
                         <children>
@@ -68,6 +75,9 @@
                                         </image>
                                     </ImageView>
                                 </graphic>
+                                <tooltip>
+                                    <Tooltip text="Refresh the current directory's content" />
+                                </tooltip>
                             </Button>
                         </children>
                     </HBox>
@@ -97,6 +107,9 @@
                     <HBox spacing="5">
                         <children>
                             <ComboBox fx:id="rightDriveList" promptText="Drives" onAction="#handleRightComboBoxChangeEvent">
+                                <tooltip>
+                                    <Tooltip text="Show the list of available drives" />
+                                </tooltip>
                             </ComboBox>
                         </children>
                         <children>
@@ -108,10 +121,12 @@
                                         </image>
                                     </ImageView>
                                 </graphic>
+                                <tooltip>
+                                    <Tooltip text="Back to the parent directory" />
+                                </tooltip>
                             </Button>
                         </children>
                         <children>
-
                             <Button fx:id="rightRefreshButton" onMouseClicked="#handleRightRefreshButtonEvent">
                                 <graphic>
                                     <ImageView>
@@ -120,6 +135,9 @@
                                         </image>
                                     </ImageView>
                                 </graphic>
+                                <tooltip>
+                                    <Tooltip text="Refresh the current directory's content" />
+                                </tooltip>
                             </Button>
                         </children>
                     </HBox>
