@@ -10,9 +10,9 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-
 <?import javafx.scene.layout.HBox?>
 <?import javafx.geometry.Insets?>
+
 <BorderPane
             xmlns:fx="http://javafx.com/fxml" fx:controller="com.kivimango.coffeecommander.controllers.DirectoryBrowserController">
     <top>
@@ -57,7 +57,7 @@
                     </HBox>
                 </children>
                 <children>
-                    <Label fx:id="leftPathLabel" text=""></Label>
+                    <Label fx:id="leftPathLabel" text="" style="-fx-font: NORMAL 20 Tahoma;"></Label>
                 </children>
                 <children>
                     <TableView fx:id="leftTable" onMouseClicked="#handleMouseClickOnLeftTable">
@@ -95,7 +95,7 @@
                     </HBox>
                 </children>
                 <children>
-                    <Label fx:id="rightPathLabel" text=""></Label>
+                    <Label fx:id="rightPathLabel" text="" style="-fx-font: NORMAL 20 TAHOMA;"></Label>
                 </children>
                 <children>
                     <TableView fx:id="rightTable" onMouseClicked="#handleMouseClickOnRightTable">

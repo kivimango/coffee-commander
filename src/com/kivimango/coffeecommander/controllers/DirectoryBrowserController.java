@@ -149,9 +149,6 @@ public class DirectoryBrowserController implements Initializable{
 
         leftPathLabel.setText(firstRoot.getAbsolutePath());
         rightPathLabel.setText(firstRoot.getAbsolutePath());
-
-        leftPathLabel.setStyle("-fx-font-weight:bold");
-        rightPathLabel.setStyle("-fx-font-weight:bold");
     }
 
     @FXML
