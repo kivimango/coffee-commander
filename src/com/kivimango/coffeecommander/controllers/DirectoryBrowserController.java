@@ -8,13 +8,7 @@ import com.sun.javafx.PlatformUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -75,7 +69,21 @@ public class DirectoryBrowserController implements Initializable{
     @FXML
     public Label rightPathLabel;
 
+    @FXML
+    public Button leftRefreshButton;
+
+    @FXML
+    public Button rightRefreshButton;
+
+    @FXML
+    public Button leftUpButton;
+
+    @FXML
+    public Button rightUpButton;
+
     private FileSystemDAO model = new FileSystemDAO();
+    private File leftCurrentWorkingDirectory = new File("/");
+    private File rightCurrentWorkingDirectory = new File("/");
 
     public DirectoryBrowserController() {
     }
@@ -133,6 +141,8 @@ public class DirectoryBrowserController implements Initializable{
         rightDriveList.getItems().setAll(drives);
 
         File firstRoot = new File(drives.get(0));
+        leftCurrentWorkingDirectory = firstRoot;
+        rightCurrentWorkingDirectory = firstRoot;
 
         leftTable.getItems().setAll(model.getDirectoryContent(firstRoot));
         rightTable.getItems().setAll(model.getDirectoryContent(firstRoot));
@@ -148,6 +158,7 @@ public class DirectoryBrowserController implements Initializable{
             if(selectedRow != null) {
                 handleMouseClickOnTables(leftTable, selectedRow);
                 leftPathLabel.setText(selectedRow.getPath());
+                leftCurrentWorkingDirectory = new File(selectedRow.getPath());
             } else return;
         }
     }
@@ -159,6 +170,7 @@ public class DirectoryBrowserController implements Initializable{
             if(selectedRow != null) {
                 handleMouseClickOnTables(rightTable, selectedRow);
                 rightPathLabel.setText(selectedRow.getPath());
+                rightCurrentWorkingDirectory = new File(selectedRow.getPath());
             } else return;
         }
     }
@@ -170,7 +182,9 @@ public class DirectoryBrowserController implements Initializable{
         } else if((PlatformUtil.isWindows() || PlatformUtil.isWin7OrLater()) && selectedRow.getName().endsWith(".lnk")) {
             parseWindowsLnk(selectedFile);
         } else try {
-            model.openFileWithAssociatedProgram(selectedFile);
+            if(PlatformUtil.isWindows()) {
+                model.openFileWithAssociatedProgram(selectedFile);
+            }
         } catch (IOException e) {
             showAlertDialog(e.getLocalizedMessage());
         }
@@ -204,13 +218,25 @@ public class DirectoryBrowserController implements Initializable{
     @FXML
     public void handleLeftComboBoxChangeEvent(ActionEvent event) {
         String selectedDrive = leftDriveList.getValue();
-       refreshTable(leftTable, selectedDrive);
+        leftCurrentWorkingDirectory = new File(selectedDrive);
+        refreshTable(leftTable, selectedDrive);
     }
 
     @FXML
     public void handleRightComboBoxChangeEvent(ActionEvent event) {
         String selectedDrive = rightDriveList.getValue();
+        rightCurrentWorkingDirectory = new File(selectedDrive);
         refreshTable(rightTable, selectedDrive);
+    }
+
+    @FXML
+    public void handleLeftRefreshButtonEvent(MouseEvent mouseEvent) {
+        refreshTable(leftTable, leftCurrentWorkingDirectory.getAbsolutePath());
+    }
+
+    @FXML
+    public void handleRightRefreshButtonEvent(MouseEvent mouseEvent) {
+        refreshTable(rightTable, rightCurrentWorkingDirectory.getAbsolutePath());
     }
 
     /**
@@ -243,5 +269,43 @@ public class DirectoryBrowserController implements Initializable{
         "Please report bugs and issues on the following site: \n" +
                 "https://github.com/kivimango/coffee-commander/issues");
         alert.showAndWait();
+    }
+
+    @FXML
+    public void handleLeftUpButtonEvent(MouseEvent mouseEvent) {
+        String parent = getParent(leftCurrentWorkingDirectory);
+           if(parent != null) {
+               leftCurrentWorkingDirectory = new File(parent);
+               refreshTable(leftTable, parent);
+            }
+        else {
+            leftCurrentWorkingDirectory = new File("/");
+            refreshTable(leftTable, leftCurrentWorkingDirectory.getPath());
+        }
+        leftPathLabel.setText(leftCurrentWorkingDirectory.getPath());
+    }
+
+    @FXML
+    public void handleRightUpButtonEvent(MouseEvent mouseEvent) {
+        String parent = getParent(rightCurrentWorkingDirectory);
+        if(parent != null) {
+            rightCurrentWorkingDirectory = new File(parent);
+            refreshTable(rightTable, parent);
+        }
+        else {
+            rightCurrentWorkingDirectory = new File("/");
+            refreshTable(rightTable, rightCurrentWorkingDirectory.getPath());
+        }
+        rightPathLabel.setText(rightCurrentWorkingDirectory.getPath());
+    }
+
+    private String getParent(File children) {
+        String path = children.getAbsoluteFile().getParent();
+        // getParent() can return null if the File has no parent
+        if(path != null) {
+            System.out.println(path.substring(path.lastIndexOf("\\")+1,path.length()));
+            return path;
+            // no parent, because you are already on a root folder.
+        } else return null;
     }
 }
