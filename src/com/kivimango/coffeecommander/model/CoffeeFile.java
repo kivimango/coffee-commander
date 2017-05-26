@@ -35,8 +35,8 @@ public class CoffeeFile {
         this.name = name;
     }
 
-    public long getSize() {
-        return size;
+    public String getSize() {
+        return formatSize(size);
     }
 
     public void setSize(long size) {
@@ -57,5 +57,18 @@ public class CoffeeFile {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    /**
+     * Converting the file's size to a human readable format.
+     * Code taken from here : https://stackoverflow.com/questions/3758606/how-to-convert-byte-size-into-human-readable-format-in-java
+     * @param size The file's size in bytes
+     * @return The formatted string
+     */
+
+    private static String formatSize(long size) {
+        if (size < 1024) return size + " B";
+        int z = (63 - Long.numberOfLeadingZeros(size)) / 10;
+        return String.format("%.1f %sB", (double)size / (1L << (z*10)), " KMGTPE".charAt(z));
     }
 }
