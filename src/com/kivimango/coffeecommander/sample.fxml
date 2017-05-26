@@ -152,6 +152,9 @@
                         <columnResizePolicy>
                             <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                         </columnResizePolicy>
+                        <placeholder>
+                            <Label text="Empty directory"></Label>
+                        </placeholder>
                         <columns>
                             <TableColumn fx:id="rightIconCol" text="Icon"/>
                             <TableColumn fx:id="rightFileNameCol" text="Filename"/>
