@@ -1,13 +1,27 @@
 package com.kivimango.coffeecommander;
 
+import com.kivimango.coffeecommander.controllers.DirectoryBrowserController;
+import com.kivimango.coffeecommander.model.FileSystemStrategy;
+import com.kivimango.coffeecommander.model.LinuxFileSystemStrategy;
+import com.kivimango.coffeecommander.model.WindowsFileSystemStrategy;
+import com.sun.javafx.PlatformUtil;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+
+/**
+ * Coffee Commander
+ * A free, platform-independent file manager application written in JAVA using JavaFX library.
+ *
+ * @author kivimango
+ * @version 0.1
+ * @link https://github.com/kivimango/coffee-commander
+ */
 
 public class Main extends Application {
 
@@ -16,20 +30,29 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        primaryStage.setTitle(APP_TITLE + " " + APP_VERSION);
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("gui.fxml"));
+        loader.setController(new DirectoryBrowserController(getStrategyBasedOnHostSystem()));
+        Pane root = loader.load();
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int width = (int) (screenSize.width * 0.75);
+        int width = (int) (screenSize.width * 0.85);
         int height = (int) ((screenSize.height * 0.75));
+
+        primaryStage.setTitle(APP_TITLE + " " + APP_VERSION);
         primaryStage.setScene(new Scene(root, width, height));
-
-        primaryStage.getIcons().add( new Image( Main.class.getResourceAsStream( "icon.png" )));
-
+        //primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("../../../main/resources/icons/icon.png")));
         primaryStage.show();
     }
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    private FileSystemStrategy getStrategyBasedOnHostSystem() {
+        if(PlatformUtil.isWindows()) {
+            return new WindowsFileSystemStrategy();
+        } else if(PlatformUtil.isLinux()) {
+            return new LinuxFileSystemStrategy();
+        } else return null;
     }
 }

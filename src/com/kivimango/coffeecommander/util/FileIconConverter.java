@@ -1,4 +1,4 @@
-package com.kivimango.coffeecommander.model;
+package com.kivimango.coffeecommander.util;
 
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
@@ -10,7 +10,7 @@ import java.io.File;
 /**
  * Converting a Swing file system icon to a JavaFX Image to able to display in a TableView column.
  * Swing ImageIcon/Icon object does not compatible with JavaFX TableView's imageView.
- * Code copied <a href="from http://stackoverflow.com/questions/28034432/javafx-file-listview-with-icon-and-file-name">here</a></a>
+ * Code copied <a href="from http://stackoverflow.com/questions/28034432/javafx-file-listview-with-icon-and-file-name">here</a>
  *
  * @author kivimango
  * @version 1.0
