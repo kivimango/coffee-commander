@@ -200,7 +200,11 @@
     </center>
     <bottom>
         <ToolBar>
-            <Button text="Open"/>
+            <Button fx:id="createDirButton" text="Create directory" onMouseClicked="#handleCreateDirEvent">
+                <tooltip>
+                    <Tooltip text="Creates a new directory in the current folder."/>
+                </tooltip>
+            </Button>
         </ToolBar>
     </bottom>
 </BorderPane>
