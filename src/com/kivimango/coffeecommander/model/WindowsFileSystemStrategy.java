@@ -3,6 +3,9 @@ package com.kivimango.coffeecommander.model;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +36,12 @@ public class WindowsFileSystemStrategy extends BaseModel implements FileSystemSt
             }
         }
         return directoryContent;
+    }
+
+    @Override
+    public void createNewDirectory(Path path, String name) throws IOException {
+        path = Paths.get(path + File.separator + name);
+        Files.createDirectory(path);
     }
 
     @Override

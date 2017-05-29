@@ -7,24 +7,21 @@ import com.sun.javafx.PlatformUtil;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class DirectoryBrowserController implements Initializable {
@@ -86,11 +83,17 @@ public class DirectoryBrowserController implements Initializable {
     @FXML
     public Button rightUpButton;
 
+    @FXML
+    Button createDirButton;
+
+    // variable indicating the last focused table 0 : leftTable, 1 : rightTable
+    private short lastFocused = 0;
+
     private FileSystemStrategy model;
     private File leftCurrentWorkingDirectory;
     private File rightCurrentWorkingDirectory;
 
-   public DirectoryBrowserController(FileSystemStrategy strategy) {
+    public DirectoryBrowserController(FileSystemStrategy strategy) {
         model = strategy;
     }
 
@@ -115,6 +118,17 @@ public class DirectoryBrowserController implements Initializable {
                 leftCurrentWorkingDirectory = new File(selectedRow.getPath());
             }
         }
+        else {
+            rememberLastFocusedTable();
+        }
+    }
+
+    private void rememberLastFocusedTable() {
+        if(!rightTable.isFocused()) {
+            lastFocused = 0;
+        } else if(!leftTable.isFocused()){
+            lastFocused = 1;
+        }
     }
 
     @FXML
@@ -126,6 +140,9 @@ public class DirectoryBrowserController implements Initializable {
                 rightPathLabel.setText(selectedRow.getPath());
                 rightCurrentWorkingDirectory = new File(selectedRow.getPath());
             }
+        }
+        else {
+            rememberLastFocusedTable();
         }
     }
 
@@ -240,6 +257,36 @@ public class DirectoryBrowserController implements Initializable {
         rightPathLabel.setText(rightCurrentWorkingDirectory.getPath());
     }
 
+    @FXML
+    public void handleCreateDirEvent(MouseEvent mouseEvent) {
+        TextInputDialog dialog = initCreateDirDialog();
+        Optional<String> dirName = dialog.showAndWait();
+        if(dirName.isPresent()) {
+            if(lastFocused == 0) {
+                createDir(leftTable, leftCurrentWorkingDirectory.toPath(), dirName.get());
+            } else {
+                createDir(rightTable, rightCurrentWorkingDirectory.toPath(), dirName.get());
+            }
+        }
+    }
+
+    private void createDir(TableView<CoffeeFile> table, Path path, String name) {
+        try {
+            model.createNewDirectory(path, name);
+            Path newPath = Paths.get(leftCurrentWorkingDirectory.getAbsolutePath() + File.separator + name);
+            table.requestFocus();
+            if (Files.exists(newPath)) {
+                showSuccessDialog("New directory ( " + name +" ) created!");
+                refreshTable(table, path.toString());
+                System.out.print(path.toString());
+            } else {
+                showAlertDialog("Cannot create directory !");
+            }
+        } catch(IOException e){
+            showAlertDialog(e.getLocalizedMessage());
+        }
+    }
+
     private String getParent(File children) {
         String path = children.getAbsoluteFile().getParent();
         // getParent() can return null if the File has no parent
@@ -250,8 +297,24 @@ public class DirectoryBrowserController implements Initializable {
         } else return null;
     }
 
-    private void showAlertDialog(String message) {
+    private TextInputDialog initCreateDirDialog() {
+        TextInputDialog createDirDialog = new TextInputDialog("New directory");
+        createDirDialog.setTitle("Create new directory");
+        createDirDialog.setHeaderText(null);
+        createDirDialog.setContentText("Name of the directory:");
+        return createDirDialog;
+    }
+
+    private void showSuccessDialog(String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Success !");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void showAlertDialog(String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setTitle("Cannot run file!");
         alert.setHeaderText(null);
         alert.setContentText(message);
@@ -322,5 +385,7 @@ public class DirectoryBrowserController implements Initializable {
 
         leftPathLabel.setText(firstRoot.getAbsolutePath());
         rightPathLabel.setText(firstRoot.getAbsolutePath());
+
+        leftTable.requestFocus();
     }
 }
