@@ -4,13 +4,17 @@ import com.kivimango.coffeecommander.Main;
 import com.kivimango.coffeecommander.model.*;
 import com.kivimango.coffeecommander.util.WindowsShortcutResolver;
 import com.sun.javafx.PlatformUtil;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.util.Pair;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -85,6 +89,9 @@ public class DirectoryBrowserController implements Initializable {
 
     @FXML
     Button createDirButton;
+
+    @FXML
+    Button copyButton;
 
     // variable indicating the last focused table 0 : leftTable, 1 : rightTable
     private short lastFocused = 0;
@@ -287,6 +294,64 @@ public class DirectoryBrowserController implements Initializable {
         }
     }
 
+    @FXML
+    public void handleCopyEvent() {
+        String leftValue;
+        String rightValue;
+
+        if(lastFocused == 0) {
+            leftValue = leftCurrentWorkingDirectory.getAbsolutePath();
+           rightValue = rightCurrentWorkingDirectory.getAbsolutePath();
+        } else {
+            leftValue = rightCurrentWorkingDirectory.getAbsolutePath();
+            rightValue = leftCurrentWorkingDirectory.getAbsolutePath();
+        }
+
+        Dialog<Pair<String, String >> dialog = new Dialog<>();
+        dialog.setTitle("Copy files/directories");
+
+        ObservableList<CoffeeFile> selectedItems = leftTable.getSelectionModel().getSelectedItems();
+        int selectedItemsCount = selectedItems.size();
+
+        dialog.setHeaderText("Copying "+ selectedItemsCount +" item");
+
+        ButtonType okButton = new ButtonType("Copy", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(okButton, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField sourceDirInput = new TextField();
+        sourceDirInput.setText(leftValue);
+        TextField destinationDirInput = new TextField();
+        destinationDirInput.setText(rightValue);
+
+        grid.add(new Label("Source directory:"), 0, 0);
+        grid.add(sourceDirInput, 1, 0);
+        grid.add(new Label("Destination directory:"),0, 1);
+        grid.add(destinationDirInput, 1, 1);
+
+        sourceDirInput.textProperty().addListener((observable, oldValue, newValue) -> {
+            sourceDirInput.setDisable(newValue.trim().isEmpty());
+        });
+
+        dialog.getDialogPane().setContent(grid);
+
+        dialog.setResultConverter(dialogButton -> {
+            if(dialogButton == okButton) {
+                return new Pair<>(sourceDirInput.getText(), destinationDirInput.getText());
+            }
+            return null;
+        });
+
+        Optional<Pair<String, String>> result = dialog.showAndWait();
+        result.ifPresent(pathParams -> {
+            System.out.println("source=" + pathParams.getKey() + ", destination=" + pathParams.getValue());
+        });
+    }
+
     private String getParent(File children) {
         String path = children.getAbsoluteFile().getParent();
         // getParent() can return null if the File has no parent
@@ -385,6 +450,9 @@ public class DirectoryBrowserController implements Initializable {
 
         leftPathLabel.setText(firstRoot.getAbsolutePath());
         rightPathLabel.setText(firstRoot.getAbsolutePath());
+
+        leftTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        rightTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         leftTable.requestFocus();
     }
