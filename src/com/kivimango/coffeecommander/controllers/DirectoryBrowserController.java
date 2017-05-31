@@ -4,6 +4,7 @@ import com.kivimango.coffeecommander.Main;
 import com.kivimango.coffeecommander.model.*;
 import com.kivimango.coffeecommander.util.WindowsShortcutResolver;
 import com.sun.javafx.PlatformUtil;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -307,11 +308,22 @@ public class DirectoryBrowserController implements Initializable {
             rightValue = leftCurrentWorkingDirectory.getAbsolutePath();
         }
 
+        ObservableList<CoffeeFile> selectedItems = FXCollections.observableArrayList();;
+        if(lastFocused == 0) {
+            selectedItems = leftTable.getSelectionModel().getSelectedItems();
+        } else {
+            selectedItems = rightTable.getSelectionModel().getSelectedItems();
+        }
+
+        int selectedItemsCount = selectedItems.size();
+
+        if(selectedItemsCount < 1) {
+            showAlertDialog("No items selected !");
+            return;
+        }
+
         Dialog<Pair<String, String >> dialog = new Dialog<>();
         dialog.setTitle("Copy files/directories");
-
-        ObservableList<CoffeeFile> selectedItems = leftTable.getSelectionModel().getSelectedItems();
-        int selectedItemsCount = selectedItems.size();
 
         dialog.setHeaderText("Copying "+ selectedItemsCount +" item");
 
@@ -332,6 +344,7 @@ public class DirectoryBrowserController implements Initializable {
         grid.add(sourceDirInput, 1, 0);
         grid.add(new Label("Destination directory:"),0, 1);
         grid.add(destinationDirInput, 1, 1);
+        grid.add(new CheckBox("Overwrite existing"), 0, 2);
 
         sourceDirInput.textProperty().addListener((observable, oldValue, newValue) -> {
             sourceDirInput.setDisable(newValue.trim().isEmpty());
@@ -347,8 +360,55 @@ public class DirectoryBrowserController implements Initializable {
         });
 
         Optional<Pair<String, String>> result = dialog.showAndWait();
+        ObservableList<CoffeeFile> finalSelectedItems = selectedItems;
+        ObservableList<CoffeeFile> finalSelectedItems1 = selectedItems;
         result.ifPresent(pathParams -> {
             System.out.println("source=" + pathParams.getKey() + ", destination=" + pathParams.getValue());
+
+            Dialog progressDialog = new Dialog<>();
+
+            progressDialog.setTitle("Copying...");
+            progressDialog.setContentText("Copying...");
+
+            progressDialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
+
+            GridPane grid2 = new GridPane();
+            grid2.setHgap(10);
+            grid2.setVgap(10);
+            grid2.setPadding(new Insets(20, 150, 10, 10));
+
+            Label label = new Label(pathParams.getKey());
+
+            ProgressBar progressBar = new ProgressBar();
+
+            grid2.add(label, 0, 0);
+            grid2.add(progressBar, 0, 1);
+
+            progressDialog.getDialogPane().setContent(grid2);
+            progressDialog.show();
+
+            // TO_DO : handle filealreadyexists exception, overwrite checkboc value, directory copy
+
+            int i = 0;
+            for(CoffeeFile f : finalSelectedItems) {
+                label.setText(f.getName());
+                Path sourcePath = Paths.get(pathParams.getKey() + File.separator + finalSelectedItems1.get(i).getName());
+                Path destPath = Paths.get(pathParams.getValue() + File.separator + finalSelectedItems1.get(i).getName());
+                System.out.print(sourcePath);
+                System.out.println(destPath);
+                try {
+                    Files.copy(sourcePath, destPath);
+                    double pr = ((selectedItemsCount * i+1) / 100);
+                    progressBar.setProgress(pr);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    //showAlertDialog(e.getMessage());
+                    System.out.print(e.getMessage());
+                }
+                i++;
+            }
+            progressDialog.hide();
+            // TO_DO : refresh destination table
         });
     }
 
@@ -380,7 +440,7 @@ public class DirectoryBrowserController implements Initializable {
 
     private void showAlertDialog(String message) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Cannot run file!");
+        alert.setTitle("Warning!");
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
