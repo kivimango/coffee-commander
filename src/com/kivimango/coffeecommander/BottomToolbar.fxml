@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Tooltip?>
+
+<ToolBar xmlns:fx="http://javafx.com/fxml"
+         fx:controller="com.kivimango.coffeecommander.controllers.BottomToolbarController">
+    <Button fx:id="createDirButton" text="Create directory" onMouseClicked="#handleCreateDirEvent">
+        <tooltip>
+            <Tooltip text="Creates a new directory in the current folder."/>
+        </tooltip>
+    </Button>
+    <Button fx:id="copyButton" text="Copy" onMouseClicked="#handleCopyEvent">
+        <tooltip>
+            <Tooltip text="Copying files and folders from source to destination."/>
+        </tooltip>
+    </Button>
+</ToolBar>

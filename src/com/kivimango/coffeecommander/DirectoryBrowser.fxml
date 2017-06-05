@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+
+<SplitPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.kivimango.coffeecommander.controllers.DirectoryBrowserController">
+    <VBox>
+        <padding>
+            <Insets top="5" bottom="5" left="5" right="5"/>
+        </padding>
+        <!-- Left buttons for the left table -->
+        <HBox spacing="5">
+            <ComboBox fx:id="leftDriveList" promptText="Drives">
+                <tooltip>
+                    <Tooltip text="Show the list of available drives" />
+                </tooltip>
+            </ComboBox>
+            <Button fx:id="leftUpButton" onMouseClicked="#handleLeftUpButtonEvent">
+                <graphic>
+                    <ImageView>
+                        <Image url="/main/resources/icons/return-16x16.png"/>
+                    </ImageView>
+                </graphic>
+                <tooltip>
+                    <Tooltip text="Back to the parent directory" />
+                </tooltip>
+            </Button>
+            <Button fx:id="leftRefreshButton" onMouseClicked="#handleLeftRefreshButtonEvent">
+                <graphic>
+                    <ImageView>
+                        <Image url="/main/resources/icons/refresh-16x16.png"/>
+                    </ImageView>
+                </graphic>
+                <tooltip>
+                    <Tooltip text="Refresh the current directory's content" />
+                </tooltip>
+            </Button>
+        </HBox>
+        <Label fx:id="leftPathLabel" style="-fx-font: NORMAL 20 Tahoma;"/>
+        <TableView fx:id="leftTable" onMouseClicked="#handleMouseClickOnLeftTable">
+            <columnResizePolicy>
+                <TableView fx:constant="UNCONSTRAINED_RESIZE_POLICY" />
+            </columnResizePolicy>
+            <placeholder>
+                <Label text="Empty directory"/>
+            </placeholder>
+            <columns>
+                <TableColumn fx:id="leftIconCol" text="Icon">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="icon"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="leftFileNameCol" text="Filename">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="name"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="leftSizeCol" text="Size">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="size"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="leftDateCol" text="Date">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="date"/>
+                    </cellValueFactory>
+                </TableColumn>
+            </columns>
+        </TableView>
+    </VBox>
+    <VBox>
+        <padding>
+            <Insets top="5" bottom="5" left="5" right="5"/>
+        </padding>
+        <HBox spacing="5">
+            <ComboBox fx:id="rightDriveList" promptText="Drives" onAction="#handleRightComboBoxChangeEvent">
+                <tooltip>
+                    <Tooltip text="Show the list of available drives" />
+                </tooltip>
+            </ComboBox>
+            <Button fx:id="rightUpButton" onMouseClicked="#handleRightUpButtonEvent">
+                <graphic>
+                    <ImageView>
+                        <Image url="/main/resources/icons/return-16x16.png"/>
+                    </ImageView>
+                </graphic>
+                <tooltip>
+                    <Tooltip text="Back to the parent directory" />
+                </tooltip>
+            </Button>
+            <Button fx:id="rightRefreshButton" onMouseClicked="#handleRightRefreshButtonEvent">
+                <graphic>
+                    <ImageView>
+                        <Image url="/main/resources/icons/refresh-16x16.png"/>
+                    </ImageView>
+                </graphic>
+                <tooltip>
+                    <Tooltip text="Refresh the current directory's content" />
+                </tooltip>
+            </Button>
+        </HBox>
+        <Label fx:id="rightPathLabel" style="-fx-font: NORMAL 20 TAHOMA;"/>
+        <TableView fx:id="rightTable" onMouseClicked="#handleMouseClickOnRightTable">
+            <columnResizePolicy>
+                <TableView fx:constant="UNCONSTRAINED_RESIZE_POLICY" />
+            </columnResizePolicy>
+            <placeholder>
+                <Label text="Empty directory"/>
+            </placeholder>
+            <columns>
+                <TableColumn fx:id="rightIconCol" text="Icon">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="icon"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="rightFileNameCol" text="Filename">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="name"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="rightSizeCol" text="Size">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="size"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="rightDateCol" text="Date">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="date"/>
+                    </cellValueFactory>
+                </TableColumn>
+            </columns>
+        </TableView>
+    </VBox>
+</SplitPane>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+
+<MenuBar xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.kivimango.coffeecommander.controllers.MenubarController"
+            fx:id="menuBar">
+            <Menu text="File">
+                <items>
+                    <MenuItem text="Exit" onAction="#exitFromApplication"/>
+                </items>
+            </Menu>
+            <Menu text="Help">
+                <items>
+                    <MenuItem text="About" onAction="#showAboutDialog"/>
+                </items>
+            </Menu>
+</MenuBar>

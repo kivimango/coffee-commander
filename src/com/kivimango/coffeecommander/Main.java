@@ -1,10 +1,5 @@
 package com.kivimango.coffeecommander;
 
-import com.kivimango.coffeecommander.controllers.DirectoryBrowserController;
-import com.kivimango.coffeecommander.model.FileSystemStrategy;
-import com.kivimango.coffeecommander.model.LinuxFileSystemStrategy;
-import com.kivimango.coffeecommander.model.WindowsFileSystemStrategy;
-import com.sun.javafx.PlatformUtil;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -29,9 +24,8 @@ public class Main extends Application {
     public static final String APP_VERSION = "0.1";
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("gui.fxml"));
-        loader.setController(new DirectoryBrowserController(getStrategyBasedOnHostSystem()));
         Pane root = loader.load();
 
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -46,13 +40,5 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
-    }
-
-    private FileSystemStrategy getStrategyBasedOnHostSystem() {
-        if(PlatformUtil.isWindows()) {
-            return new WindowsFileSystemStrategy();
-        } else if(PlatformUtil.isLinux()) {
-            return new LinuxFileSystemStrategy();
-        } else return null;
     }
 }
