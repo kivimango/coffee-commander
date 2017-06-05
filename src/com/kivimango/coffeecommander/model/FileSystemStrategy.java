@@ -9,5 +9,6 @@ public interface FileSystemStrategy {
     List<String> getDrives();
     List<CoffeeFile> getDirectoryContent(Path path) throws IOException;
     void createNewDirectory(Path path, String name) throws IOException;
+    void delete(Path path) throws IOException;
     void openFileWithAssociatedProgram(File fileToOpen) throws IOException;
 }

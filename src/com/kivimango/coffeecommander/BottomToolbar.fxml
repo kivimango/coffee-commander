@@ -16,4 +16,9 @@
             <Tooltip text="Copying files and folders from source to destination."/>
         </tooltip>
     </Button>
+    <Button fx:id="deleteButton" text="Delete" onMouseClicked="#handleDeleteEvent">
+        <tooltip>
+            <Tooltip text="Delete selected file or directory."/>
+        </tooltip>
+    </Button>
 </ToolBar>

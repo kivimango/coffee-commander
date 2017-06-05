@@ -38,9 +38,10 @@ import java.util.Optional;
 public class BottomToolbarController {
 
     private MainController main;
-    FileSystemStrategy model;
+    private FileSystemStrategy model;
     @FXML Button createDirButton;
     @FXML Button copyButton;
+    @FXML Button deleteButton;
 
     /**
      * Showing a TextInputDialog, waiting for user to enter the directory's name to create.
@@ -114,7 +115,7 @@ public class BottomToolbarController {
 
         int selectedItemsCount = selectedItems.size();
         if(selectedItemsCount < 1) {
-            showAlertDialog("No items selected !");
+            showAlertDialog("No item(s) selected !");
             return;
         }
 
@@ -211,6 +212,53 @@ public class BottomToolbarController {
             progressDialog.hide();
             // TO_DO : refresh destination table
         });
+    }
+
+    @FXML
+    void handleDeleteEvent(MouseEvent mouseEvent) {
+        ObservableList<CoffeeFile> selectedItems = FXCollections.observableArrayList();
+
+        // Deciding which table is the source
+        if(main.getLastFocusedTable() == 0) {
+            selectedItems = main.getLeftTable().getSelectionModel().getSelectedItems();
+        } else {
+            selectedItems = main.getRightTable().getSelectionModel().getSelectedItems();
+        }
+
+        int selectedItemsCount = selectedItems.size();
+        if(selectedItemsCount < 1) {
+            showAlertDialog("No item(s) selected !");
+            return;
+        }
+
+        // Show the confirmation dialog
+        Alert dialog = initConfirmDirDialog();
+        Optional<ButtonType> choice = dialog.showAndWait();
+
+        // Deleting the selected items (files, directories containing files and subdirectories)
+        if(choice.get() == ButtonType.OK) {
+            for(CoffeeFile f : selectedItems) {
+                try {
+                    model.delete(Paths.get(f.getPath()));
+                } catch (IOException e) {
+                    showAlertDialog(e.getLocalizedMessage());
+                }
+            }
+
+            // Refreshing the appropriate table after the selected items deleted
+            if(main.getLastFocusedTable() == 0) {
+                main.refreshTable(main.getLeftTable(), main.getLeftPath());
+            } else {
+                main.refreshTable(main.getRightTable(), main.getRightPath());
+            }
+        }
+    }
+
+    private Alert initConfirmDirDialog() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirm delete");
+        alert.setHeaderText("Are you really want to delete this ?");
+        return alert;
     }
 
     private TextInputDialog initCreateDirDialog() {

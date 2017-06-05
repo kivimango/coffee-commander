@@ -3,13 +3,7 @@ package com.kivimango.coffeecommander.model;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.DirectoryIteratorException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.nio.file.attribute.PosixFileAttributes;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.ArrayList;
@@ -53,6 +47,11 @@ public class LinuxFileSystemStrategy extends BaseModel implements FileSystemStra
     public void createNewDirectory(Path path, String name) throws IOException {
         path = Paths.get(path + File.separator + name);
         Files.createDirectory(path);
+    }
+
+    @Override
+    public void delete(Path path) throws IOException {
+        super.delete(path);
     }
 
     @Override
