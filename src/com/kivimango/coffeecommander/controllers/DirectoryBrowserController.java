@@ -105,7 +105,7 @@ public class DirectoryBrowserController {
     }
 
     void init() {
-        File firstRoot = initDriveLists();
+        Path firstRoot = initDriveLists();
         initTables(firstRoot);
     }
 
@@ -225,7 +225,7 @@ public class DirectoryBrowserController {
     void refreshTable(TableView<CoffeeFile> table, Path path) {
         List<CoffeeFile> content = new ArrayList<>();
         try {
-            content = model.getDirectoryContent(path.toFile());
+            content = model.getDirectoryContent(path);
         } catch (IOException e) {
             showAlertDialog(e.getMessage());
         }
@@ -277,20 +277,20 @@ public class DirectoryBrowserController {
         alert.showAndWait();
     }
 
-    private File initDriveLists() {
+    private Path initDriveLists() {
         List<String> drives = model.getDrives();
         leftDriveList.getItems().setAll((drives));
         leftDriveList.getSelectionModel().selectFirst();
         rightDriveList.getItems().setAll(drives);
         rightDriveList.getSelectionModel().selectFirst();
 
-        File firstRoot = new File(drives.get(0));
+        Path firstRoot = Paths.get(drives.get(0));
         leftCurrentWorkingDirectory = Paths.get(drives.get(0));
         rightCurrentWorkingDirectory = Paths.get(drives.get(0));
         return firstRoot;
     }
 
-    private void initTables(File firstRoot) {
+    private void initTables(Path firstRoot) {
         // Setting cell renderer form displaying the icon
         leftIconCol.setCellFactory(column -> new TableCell<CoffeeFile, Image>() {
             @Override
@@ -326,8 +326,8 @@ public class DirectoryBrowserController {
         leftTable.getItems().setAll(content);
         rightTable.getItems().setAll(content);
 
-        leftPathLabel.setText(firstRoot.getAbsolutePath());
-        rightPathLabel.setText(firstRoot.getAbsolutePath());
+        leftPathLabel.setText(firstRoot.toString());
+        rightPathLabel.setText(firstRoot.toString());
 
         leftTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         rightTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);

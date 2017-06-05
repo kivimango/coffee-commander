@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface FileSystemStrategy {
     List<String> getDrives();
-    List<CoffeeFile> getDirectoryContent(File path) throws IOException;
+    List<CoffeeFile> getDirectoryContent(Path path) throws IOException;
     void createNewDirectory(Path path, String name) throws IOException;
     void openFileWithAssociatedProgram(File fileToOpen) throws IOException;
 }

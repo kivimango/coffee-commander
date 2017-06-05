@@ -28,14 +28,14 @@ public class LinuxFileSystemStrategy extends BaseModel implements FileSystemStra
     }
 
     @Override
-    public List<CoffeeFile> getDirectoryContent(File path) throws IOException {
+    public List<CoffeeFile> getDirectoryContent(Path path) throws IOException {
         if(!directoryContent.isEmpty()) {
             directoryContent.clear();
         }
 
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(path.toPath())) {
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
             for (Path entry: stream) {
-                PosixFileAttributes attr = Files.readAttributes(path.toPath(), PosixFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
+                PosixFileAttributes attr = Files.readAttributes(path, PosixFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
                 directoryContent.add(new CoffeeFile(iconConverter.convert(entry.toFile()),
                         entry.getFileName().toString(), attr.size(),
                         simpleDate.format(attr.lastModifiedTime().toMillis()),
