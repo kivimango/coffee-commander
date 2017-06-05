@@ -53,6 +53,9 @@ public class DirectoryBrowserController {
     private TableColumn<CoffeeFile, Date> leftDateCol;
 
     @FXML
+    private TableColumn leftPermsCol;
+
+    @FXML
     private TableColumn<CoffeeFile, Image> rightIconCol;
 
     @FXML
@@ -63,6 +66,9 @@ public class DirectoryBrowserController {
 
     @FXML
     private TableColumn<CoffeeFile, Date> rightDateCol;
+
+    @FXML
+    private TableColumn rightPermsCol;
 
     @FXML
     private ComboBox<String> leftDriveList;
@@ -253,16 +259,6 @@ public class DirectoryBrowserController {
             refreshTable(rightTable, rightCurrentWorkingDirectory);
         }
         rightPathLabel.setText(rightCurrentWorkingDirectory.toString());
-    }
-
-    private String getParent(File children) {
-        String path = children.getAbsoluteFile().getParent();
-        // getParent() can return null if the File has no parent
-        if(path != null) {
-            //System.out.println(path.substring(path.lastIndexOf("\\")+1,path.length()));
-            return path;
-            // no parent, because you are already on a root folder.
-        } else return null;
     }
 
     private void showSuccessDialog(String message) {

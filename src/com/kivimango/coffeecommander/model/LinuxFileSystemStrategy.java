@@ -7,8 +7,11 @@ import java.nio.file.DirectoryIteratorException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFileAttributes;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,11 +35,15 @@ public class LinuxFileSystemStrategy extends BaseModel implements FileSystemStra
 
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(path.toPath())) {
             for (Path entry: stream) {
-                directoryContent.add(new CoffeeFile(iconConverter.convert(entry.toFile()), entry.getFileName().toString(), Files.size(entry),
-                        simpleDate.format(Files.getLastModifiedTime(entry).toMillis()), entry.toAbsolutePath().toString()));
+                PosixFileAttributes attr = Files.readAttributes(path.toPath(), PosixFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
+                directoryContent.add(new CoffeeFile(iconConverter.convert(entry.toFile()),
+                        entry.getFileName().toString(), attr.size(),
+                        simpleDate.format(attr.lastModifiedTime().toMillis()),
+                        entry.toAbsolutePath().toString(),
+                        PosixFilePermissions.toString(attr.permissions())));
                 }
             } catch (IOException | DirectoryIteratorException x) {
-                throw new IOException();
+                throw new IOException(x.getMessage());
             }
 
         return directoryContent;

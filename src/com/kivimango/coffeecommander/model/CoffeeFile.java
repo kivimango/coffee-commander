@@ -9,13 +9,15 @@ public class CoffeeFile {
     private long size;
     private String date;
     private String path;
+    private String permissions;
 
-    public CoffeeFile(Image icon, String name, long size, String date, String path) {
+    public CoffeeFile(Image icon, String name, long size, String date, String path, String permissions) {
         this.icon = icon;
         this.name = name;
         this.size = size;
         this.date = date;
         this.path = path;
+        this.permissions = permissions;
     }
 
     public Image getIcon() {
@@ -30,8 +32,9 @@ public class CoffeeFile {
     public String getDate() {
         return date;
     }
-    public String getPath() {
-        return path;
+    public String getPath() { return path; }
+    public String getPermissions() {
+        return permissions;
     }
 
     /**

@@ -45,7 +45,7 @@
         <Label fx:id="leftPathLabel" style="-fx-font: NORMAL 20 Tahoma;"/>
         <TableView fx:id="leftTable" onMouseClicked="#handleMouseClickOnLeftTable">
             <columnResizePolicy>
-                <TableView fx:constant="UNCONSTRAINED_RESIZE_POLICY" />
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
             <placeholder>
                 <Label text="Empty directory"/>
@@ -69,6 +69,11 @@
                 <TableColumn fx:id="leftDateCol" text="Date">
                     <cellValueFactory>
                         <PropertyValueFactory property="date"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="leftPermsCol" text="Permissions">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="permissions"/>
                     </cellValueFactory>
                 </TableColumn>
             </columns>
@@ -108,7 +113,7 @@
         <Label fx:id="rightPathLabel" style="-fx-font: NORMAL 20 TAHOMA;"/>
         <TableView fx:id="rightTable" onMouseClicked="#handleMouseClickOnRightTable">
             <columnResizePolicy>
-                <TableView fx:constant="UNCONSTRAINED_RESIZE_POLICY" />
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
             </columnResizePolicy>
             <placeholder>
                 <Label text="Empty directory"/>
@@ -132,6 +137,11 @@
                 <TableColumn fx:id="rightDateCol" text="Date">
                     <cellValueFactory>
                         <PropertyValueFactory property="date"/>
+                    </cellValueFactory>
+                </TableColumn>
+                <TableColumn fx:id="rightPermsCol" text="Permissions">
+                    <cellValueFactory>
+                        <PropertyValueFactory property="permissions"/>
                     </cellValueFactory>
                 </TableColumn>
             </columns>
