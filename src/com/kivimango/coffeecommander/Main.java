@@ -35,6 +35,13 @@ public class Main extends Application {
         primaryStage.setTitle(APP_TITLE + " " + APP_VERSION);
         primaryStage.setScene(new Scene(root, width, height));
         //primaryStage.getIcons().add(new Image(Main.class.getResourceAsStream("../../../main/resources/icons/icon.png")));
+
+        /**
+         * Adding a reference to the HostServices class.
+         * Sub controllers can reach it, and use e.g.: open a new internet browser window.
+         */
+        primaryStage.getProperties().put("hostServices", this.getHostServices());
+
         primaryStage.show();
     }
 
