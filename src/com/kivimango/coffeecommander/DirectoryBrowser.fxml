@@ -16,7 +16,7 @@
         </padding>
         <!-- Left buttons for the left table -->
         <HBox spacing="5">
-            <ComboBox fx:id="leftDriveList" promptText="Drives">
+            <ComboBox fx:id="leftDriveList" promptText="Drives" onAction="#handleLeftComboBoxChangeEvent">
                 <tooltip>
                     <Tooltip text="Show the list of available drives" />
                 </tooltip>
