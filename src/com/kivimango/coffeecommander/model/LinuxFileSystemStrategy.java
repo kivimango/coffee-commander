@@ -36,10 +36,7 @@ public class LinuxFileSystemStrategy extends BaseModel implements FileSystemStra
                         entry.toAbsolutePath().toString(),
                         PosixFilePermissions.toString(attr.permissions())));
                 }
-            } catch (IOException | DirectoryIteratorException x) {
-                throw new IOException(x.getMessage());
             }
-
         return directoryContent;
     }
 
