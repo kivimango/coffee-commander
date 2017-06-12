@@ -27,7 +27,7 @@ public class MenubarController {
     private MainController mainController;
 
     @FXML private MenuBar menuBar;
-    
+
     private final String GITHUB_ISSUES_LINK = "https://github.com/kivimango/coffee-commander/issues";
 
     private Stage stage;
@@ -45,9 +45,9 @@ public class MenubarController {
      * Showing a customized dialog with information about the application.
      * The dialog has a custom body with a clickable hyperlink to the github repo's Issues page.
      *
-     * Note: however that this will introduce a dependency to the AWT stack. This is probably not an issue if you're
-     * working with the full JRE, but it might become an issue if you want to work with a tailored JRE
-     * (Java SE 9 & Jigsaw) or if you want to run your application on mobile device (javafxports).
+     * Don't use the AWT Desktop class, because it  will introduce a dependency to the AWT stack.
+     * This is probably not an issue if you're working with the full JRE, but it might become an issue if you want to
+     * work with a tailored JRE (Java SE 9 & Jigsaw) or if you want to run your application on mobile device (javafxports).
      * There is an open issue to <a href="https://bugs.openjdk.java.net/browse/JDK-8091107">support Desktop</a>
      * in JavaFX in the future.
      *
