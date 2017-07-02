@@ -10,6 +10,7 @@ public class CoffeeFile {
     private String date;
     private String path;
     private String permissions;
+    private static final String DIR_SZE = "<DIR>";
 
     public CoffeeFile(Image icon, String name, long size, String date, String path, String permissions) {
         this.icon = icon;
@@ -27,7 +28,7 @@ public class CoffeeFile {
         return name;
     }
     public String getSize() {
-        return formatSize(size);
+        return (size>0) ? formatSize(size) : DIR_SZE;
     }
     public String getDate() {
         return date;
