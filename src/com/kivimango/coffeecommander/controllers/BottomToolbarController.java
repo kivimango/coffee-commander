@@ -2,26 +2,19 @@ package com.kivimango.coffeecommander.controllers;
 
 import com.kivimango.coffeecommander.model.CoffeeFile;
 import com.kivimango.coffeecommander.model.FileSystemStrategy;
+import com.kivimango.coffeecommander.view.dialog.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.GridPane;
-import javafx.util.Pair;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -50,7 +43,7 @@ public class BottomToolbarController {
 
     @FXML
     private void handleCreateDirEvent(MouseEvent mouseEvent) {
-        TextInputDialog dialog = initCreateDirDialog();
+        TextInputDialog dialog = Alerts.initCreateDirDialog();
         Optional<String> dirName = dialog.showAndWait();
         if(dirName.isPresent()) {
             if(main.getLastFocusedTable() == 0) {
@@ -71,18 +64,22 @@ public class BottomToolbarController {
 
     private void createDir(TableView<CoffeeFile> table, Path path, String name) {
         try {
+            name = name.trim();
             model.createNewDirectory(path, name);
-            Path newPath = Paths.get( main.getLeftPath() + File.separator + name);
+            Path newPath = Paths.get( path + File.separator + name);
             table.requestFocus();
             if (Files.exists(newPath)) {
-                showSuccessDialog("New directory ( " + name +" ) created!");
+                Alert alert = Alerts.showSuccessDialog("New directory ( " + name +" ) created!");
+                alert.showAndWait();
                 main.refreshTable(table, path);
-                System.out.print(path.toString());
+                System.out.print(newPath.toString());
             } else {
-                showAlertDialog("Cannot create directory !");
+                Alert alert = Alerts.showAlertDialog("Cannot create directory !");
+                alert.showAndWait();
             }
         } catch(IOException e){
-            showAlertDialog(e.getLocalizedMessage());
+            Alert alert = Alerts.showAlertDialog(e.getLocalizedMessage());
+            alert.showAndWait();
         }
     }
 
@@ -93,124 +90,88 @@ public class BottomToolbarController {
 
     @FXML
     private void handleCopyEvent(MouseEvent event) {
-        String leftValue;
-        String rightValue;
-
-        if(main.getLastFocusedTable() == 0) {
-            leftValue = main.getLeftPath().toString();
-            rightValue = main.getRightPath().toString();
-        } else {
-            leftValue = main.getRightPath().toString();
-            rightValue = main.getLeftPath().toString();
-        }
-
-        ObservableList<CoffeeFile> selectedItems = FXCollections.observableArrayList();
+        Path source;
+        Path target;
+        ObservableList<CoffeeFile> items = FXCollections.observableArrayList();
 
         // Deciding the source and destination paths based on the selected table
         if(main.getLastFocusedTable() == 0) {
-            selectedItems = main.getLeftTable().getSelectionModel().getSelectedItems();
+            source = main.getLeftPath();
+            target = main.getRightPath();
+            items = main.getLeftTable().getSelectionModel().getSelectedItems();
         } else {
-            selectedItems = main.getRightTable().getSelectionModel().getSelectedItems();
+            source = main.getRightPath();
+            target = main.getLeftPath();
+            items = main.getRightTable().getSelectionModel().getSelectedItems();
         }
+
+        final ObservableList<CoffeeFile> selectedItems = items;
 
         int selectedItemsCount = selectedItems.size();
         if(selectedItemsCount < 1) {
-            showAlertDialog("No item(s) selected !");
+            Alert alert = Alerts.showAlertDialog("No item(s) selected");
+            alert.showAndWait();
             return;
         }
 
         // Constructing a dialog
-        // TO-DO : export this part into a separate class
-        Dialog<Pair<String, String >> dialog = new Dialog<>();
-        dialog.setTitle("Copy files/directories");
-        dialog.setHeaderText("Copying "+ selectedItemsCount +" item");
-
-        ButtonType okButton = new ButtonType("Copy", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(okButton, ButtonType.CANCEL);
-
-        GridPane grid = new GridPane();
-        grid.setHgap(10);
-        grid.setVgap(10);
-        grid.setPadding(new Insets(20, 150, 10, 10));
-
-        TextField sourceDirInput = new TextField();
-        sourceDirInput.setText(leftValue);
-        TextField destinationDirInput = new TextField();
-        destinationDirInput.setText(rightValue);
-
-        grid.add(new Label("Source directory:"), 0, 0);
-        grid.add(sourceDirInput, 1, 0);
-        grid.add(new Label("Destination directory:"),0, 1);
-        grid.add(destinationDirInput, 1, 1);
-        grid.add(new CheckBox("Overwrite existing"), 0, 2);
-
-        sourceDirInput.textProperty().addListener((observable, oldValue, newValue) -> {
-            sourceDirInput.setDisable(newValue.trim().isEmpty());
-        });
-
-        dialog.getDialogPane().setContent(grid);
-
-        dialog.setResultConverter(dialogButton -> {
-            if(dialogButton == okButton) {
-                return new Pair<>(sourceDirInput.getText(), destinationDirInput.getText());
-            }
-            return null;
-        });
-
-        Optional<Pair<String, String>> result = dialog.showAndWait();
-        ObservableList<CoffeeFile> finalSelectedItems = selectedItems;
-        ObservableList<CoffeeFile> finalSelectedItems1 = selectedItems;
-        result.ifPresent(pathParams -> {
-            System.out.println("source=" + pathParams.getKey() + ", destination=" + pathParams.getValue());
-
+        CopyDialog copyDialog = new CopyDialog(source.toString(), target.toString(), selectedItemsCount);
+        Optional<CopyDialogResult> result = copyDialog.showAndWait();
+        result.ifPresent((CopyDialogResult dialogResult) -> {
             // Constructing a new dialog to show the progress of the copying.
-            // TO-DO:
-            // - implement updating the progressbar with the current state of the copying.
-            // - copy operation must be executed on a separate worker/service thread.
-            Dialog progressDialog = new Dialog<>();
-
-            progressDialog.setTitle("Copying...");
-            progressDialog.setContentText("Copying...");
-
-            progressDialog.getDialogPane().getButtonTypes().addAll(ButtonType.CANCEL);
-
-            GridPane grid2 = new GridPane();
-            grid2.setHgap(10);
-            grid2.setVgap(10);
-            grid2.setPadding(new Insets(20, 150, 10, 10));
-
-            Label label = new Label(pathParams.getKey());
-
-            ProgressBar progressBar = new ProgressBar();
-
-            grid2.add(label, 0, 0);
-            grid2.add(progressBar, 0, 1);
-
-            progressDialog.getDialogPane().setContent(grid2);
+            CopyProgressDialog progressDialog = new CopyProgressDialog(source.toString(), target.toString(), selectedItemsCount);
             progressDialog.show();
 
-            // TO_DO : handle filealreadyexists exception, overwrite checkboc value, directory copy
+            final int itemCount = selectedItems.size();
+            boolean shouldOverWrite = dialogResult.shouldOverwrite();
+            boolean shouldPreserve = dialogResult.shouldKeepOriginalFileDates();
+            try {
+                model.copy(progressDialog, target, selectedItems, shouldOverWrite, shouldPreserve);
+                //}
+            // user didn't checked overwrite checkbox in the CopyDialog,
+            // but there is a file already in the target path.Asking the user with a new dialog.
+            // NOT WORKING, FIX IT
 
-            int i = 0;
-            for(CoffeeFile f : finalSelectedItems) {
-                label.setText(f.getName());
-                Path sourcePath = Paths.get(pathParams.getKey() + File.separator + finalSelectedItems1.get(i).getName());
-                Path destPath = Paths.get(pathParams.getValue() + File.separator + finalSelectedItems1.get(i).getName());
-                System.out.print(sourcePath);
-                System.out.println(destPath);
-                try {
-                    Files.copy(sourcePath, destPath);
-                    double pr = ((selectedItemsCount * i+1) / 100);
-                    progressBar.setProgress(pr);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    //showAlertDialog(e.getMessage());
-                    System.out.print(e.getMessage());
-                }
-                i++;
-            }
-            progressDialog.hide();
-            // TO_DO : refresh destination table
+            /*
+            catch (FileAlreadyExistsException fae) {
+                            Alert faeAlert = new Alert(Alert.AlertType.CONFIRMATION);
+                            faeAlert.setTitle("File already exists");
+                            faeAlert.setHeaderText("A file (...) already exists");
+                            faeAlert.setContentText("What do you want to do with it?");
+
+                            ButtonType overwriteButton = new ButtonType("Overwrite", ButtonBar.ButtonData.YES);
+                            ButtonType skipButton = new ButtonType("Skip", ButtonBar.ButtonData.NO);
+                            ButtonType cancelButton = new ButtonType("Cancel", ButtonBar.ButtonData.CANCEL_CLOSE);
+                            faeAlert.getButtonTypes().setAll(overwriteButton, skipButton, cancelButton);
+                            Optional<ButtonType> askingResult = faeAlert.showAndWait();
+                            if(askingResult.isPresent()) {
+                                // user chose overwrite
+                                if (askingResult.get() == overwriteButton){
+                                    try {
+                                        model.copy(source, target, selectedItems, true, shouldPreserve,
+                                                progressDialog.getTotalProgressBar(), progressDialog.getTargetItemLabel());
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                        showAlertDialog(e.getMessage());
+                                    }
+                                }
+                                // user chose skip
+                                else if (askingResult.get() == skipButton) {
+                                    continue;
+                                }
+                                // user chose CANCEL or closed the dialog
+                                else {
+                                    break;
+                                }
+                            }
+                            */
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                            //showAlertDialog("Unable to copy (" + f.getName() + ") !");
+                Alert alert = Alerts.showAlertDialog("Unable to copy !");
+                alert.showAndWait();
+                        }
+            refreshTable();
         });
     }
 
@@ -227,62 +188,48 @@ public class BottomToolbarController {
 
         int selectedItemsCount = selectedItems.size();
         if(selectedItemsCount < 1) {
-            showAlertDialog("No item(s) selected !");
+            Alert alert = Alerts.showAlertDialog("No item(s) selected");
+            alert.showAndWait();
             return;
         }
 
         // Show the confirmation dialog
-        Alert dialog = initConfirmDirDialog();
+        Alert dialog = Alerts.initConfirmDeleteDialog();
         Optional<ButtonType> choice = dialog.showAndWait();
 
-        // Deleting the selected items (files, directories containing files and subdirectories)
-        if(choice.get() == ButtonType.OK) {
-            for(CoffeeFile f : selectedItems) {
-                try {
-                    model.delete(Paths.get(f.getPath()));
-                } catch (IOException e) {
-                    showAlertDialog(e.getLocalizedMessage());
-                }
-            }
+        // Deleting the selected items
+        if(choice.isPresent() && choice.get() == ButtonType.OK) {
+            doDelete(selectedItems);
+        }
+        refreshTable();
+    }
 
-            // Refreshing the appropriate table after the selected items deleted
-            if(main.getLastFocusedTable() == 0) {
-                main.refreshTable(main.getLeftTable(), main.getLeftPath());
-            } else {
-                main.refreshTable(main.getRightTable(), main.getRightPath());
-            }
+    private void doDelete(ObservableList<CoffeeFile> selectedItems) {
+        DeleteDialog deleteDialog = new DeleteDialog(selectedItems.size());
+        deleteDialog.show();
+        try {
+            model.delete(deleteDialog, selectedItems);
+        }
+        catch (AccessDeniedException e) {
+            // Unfortunately there is no way to make writable a file/directory if its read-only
+            Alert alert = Alerts.showAlertDialog("Could not delete ! " + "File is read-only !", e.getMessage());
+            alert.showAndWait();
+        } catch (IOException e) {
+            Alert alert = Alerts.showAlertDialog(e.getMessage());
+            alert.showAndWait();
         }
     }
 
-    private Alert initConfirmDirDialog() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle("Confirm delete");
-        alert.setHeaderText("Are you really want to delete this ?");
-        return alert;
-    }
+    /**
+     *  Refreshing the appropriate table after a task is completed (e.g.: copy, delete)
+     */
 
-    private TextInputDialog initCreateDirDialog() {
-        TextInputDialog createDirDialog = new TextInputDialog("New directory");
-        createDirDialog.setTitle("Create new directory");
-        createDirDialog.setHeaderText(null);
-        createDirDialog.setContentText("Name of the directory:");
-        return createDirDialog;
-    }
-
-    private void showSuccessDialog(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Success !");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
-
-    private void showAlertDialog(String message) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setTitle("Warning!");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
+    private void refreshTable() {
+        if(main.getLastFocusedTable() == 0) {
+            main.refreshTable(main.getLeftTable(), main.getLeftPath());
+        } else {
+            main.refreshTable(main.getRightTable(), main.getRightPath());
+        }
     }
 
     void injectMain(MainController main) {

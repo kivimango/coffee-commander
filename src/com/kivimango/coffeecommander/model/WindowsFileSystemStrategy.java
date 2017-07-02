@@ -1,5 +1,10 @@
 package com.kivimango.coffeecommander.model;
 
+import com.kivimango.coffeecommander.view.dialog.CopyProgressDialog;
+import com.kivimango.coffeecommander.view.dialog.DeleteDialog;
+import javafx.collections.ObservableList;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +36,7 @@ public class WindowsFileSystemStrategy extends BaseModel implements FileSystemSt
             directoryContent.clear();
         }
 
-        /**
+        /*
         TO-DO : here we asking the file attributes twice, once in teh filter filter accept method, second
         in the loop
         */
@@ -48,6 +53,16 @@ public class WindowsFileSystemStrategy extends BaseModel implements FileSystemSt
             }
         }
         return directoryContent;
+    }
+
+    @Override
+    public void copy(CopyProgressDialog dialog, Path target, ObservableList<CoffeeFile> selectedItems, boolean overwrite, boolean preserve) throws IOException {
+        super.copy(dialog, target, selectedItems, overwrite, preserve);
+    }
+
+    @Override
+    public void delete(DeleteDialog dialog, ObservableList<CoffeeFile> target) throws IOException {
+        super.delete(dialog, target);
     }
 
     @Override

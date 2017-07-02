@@ -1,5 +1,8 @@
 package com.kivimango.coffeecommander.model;
 
+import com.kivimango.coffeecommander.view.dialog.CopyProgressDialog;
+import com.kivimango.coffeecommander.view.dialog.DeleteDialog;
+import javafx.collections.ObservableList;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
@@ -47,8 +50,14 @@ public class LinuxFileSystemStrategy extends BaseModel implements FileSystemStra
     }
 
     @Override
-    public void delete(Path path) throws IOException {
-        super.delete(path);
+    public void copy(CopyProgressDialog dialog, Path target, ObservableList<CoffeeFile> selectedItems, boolean overwrite,
+                     boolean preserve) throws IOException {
+        super.copy(dialog, target, selectedItems, overwrite, preserve);
+    }
+
+    @Override
+    public void delete(DeleteDialog dialog, ObservableList<CoffeeFile> target) throws IOException {
+        super.delete(dialog, target);
     }
 
     @Override
