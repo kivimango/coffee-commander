@@ -1,18 +1,28 @@
 package com.kivimango.coffeecommander.controllers;
 
 import com.kivimango.coffeecommander.Main;
+import com.sun.jndi.toolkit.url.Uri;
 import javafx.application.HostServices;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.Pane;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 /**
  * Controller for handling user interactions coming from the MenuBar menu items.
@@ -61,7 +71,7 @@ public class MenubarController {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
 
         // Replacing the default dialog icon with the application icon
-        Image image1 = new Image(Main.class.getResourceAsStream("../../../main/resources/icons/icon.png"));
+        Image image1 = new Image(Main.class.getResourceAsStream("/icons/icon.png"));
         ImageView imageView = new ImageView(image1);
         alert.setGraphic(imageView);
 
@@ -86,6 +96,18 @@ public class MenubarController {
         fp.getChildren().addAll(lbl, link);
         alert.getDialogPane().contentProperty().set(fp);
         alert.showAndWait();
+    }
+
+    public void showSettings(ActionEvent actionEvent) throws MalformedURLException {
+        try {
+            Stage p = new Stage();
+            Pane root = FXMLLoader.load(getClass().getResource("/fxml/settings.fxml"));
+            p.setScene(new Scene(root));
+            p.setTitle("Settings");
+            p.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private Stage getStage() {

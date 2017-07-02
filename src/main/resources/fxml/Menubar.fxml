@@ -11,6 +11,11 @@
                     <MenuItem text="Exit" onAction="#exitFromApplication"/>
                 </items>
             </Menu>
+            <Menu text="View">
+                <items>
+                    <MenuItem text="Settings" onAction="#showSettings"/>
+                </items>
+            </Menu>
             <Menu text="Help">
                 <items>
                     <MenuItem text="About" onAction="#showAboutDialog"/>

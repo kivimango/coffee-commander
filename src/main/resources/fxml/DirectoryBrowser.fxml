@@ -24,7 +24,7 @@
             <Button fx:id="leftUpButton" onMouseClicked="#handleLeftUpButtonEvent">
                 <graphic>
                     <ImageView>
-                        <Image url="/main/resources/icons/return-16x16.png"/>
+                        <Image url="/icons/return-16x16.png"/>
                     </ImageView>
                 </graphic>
                 <tooltip>
@@ -34,7 +34,7 @@
             <Button fx:id="leftRefreshButton" onMouseClicked="#handleLeftRefreshButtonEvent">
                 <graphic>
                     <ImageView>
-                        <Image url="/main/resources/icons/refresh-16x16.png"/>
+                        <Image url="/icons/refresh-16x16.png"/>
                     </ImageView>
                 </graphic>
                 <tooltip>
@@ -92,7 +92,7 @@
             <Button fx:id="rightUpButton" onMouseClicked="#handleRightUpButtonEvent">
                 <graphic>
                     <ImageView>
-                        <Image url="/main/resources/icons/return-16x16.png"/>
+                        <Image url="/icons/return-16x16.png"/>
                     </ImageView>
                 </graphic>
                 <tooltip>
@@ -102,7 +102,7 @@
             <Button fx:id="rightRefreshButton" onMouseClicked="#handleRightRefreshButtonEvent">
                 <graphic>
                     <ImageView>
-                        <Image url="/main/resources/icons/refresh-16x16.png"/>
+                        <Image url="/icons/refresh-16x16.png"/>
                     </ImageView>
                 </graphic>
                 <tooltip>
