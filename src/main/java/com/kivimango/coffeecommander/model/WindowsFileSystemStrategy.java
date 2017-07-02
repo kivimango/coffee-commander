@@ -3,8 +3,6 @@ package com.kivimango.coffeecommander.model;
 import com.kivimango.coffeecommander.view.dialog.CopyProgressDialog;
 import com.kivimango.coffeecommander.view.dialog.DeleteDialog;
 import javafx.collections.ObservableList;
-import javafx.scene.control.Label;
-import javafx.scene.control.ProgressBar;
 import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
@@ -43,10 +41,10 @@ public class WindowsFileSystemStrategy extends BaseModel implements FileSystemSt
 
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(path, defaultFilter)) {
             for (Path entry: stream) {
-                DosFileAttributes attr = Files.readAttributes(path, DosFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
+                DosFileAttributes attr = Files.readAttributes(entry, DosFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
 
                 directoryContent.add(new CoffeeFile(iconConverter.convert(entry.toFile()),
-                        entry.getFileName().toString(), attr.size(),
+                        entry.getFileName().toString(), (Files.isDirectory(entry)) ? 0 : attr.size(),
                         simpleDate.format(attr.lastModifiedTime().toMillis()),
                         entry.toAbsolutePath().toString(),
                        ""));
