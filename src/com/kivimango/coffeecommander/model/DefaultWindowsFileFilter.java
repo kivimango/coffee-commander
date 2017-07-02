@@ -12,8 +12,8 @@ public class DefaultWindowsFileFilter implements DirectoryStream.Filter<Path> {
     public boolean accept(Path file) throws IOException {
             try {
                 DosFileAttributes dfa = Files.readAttributes(file, DosFileAttributes.class, LinkOption.NOFOLLOW_LINKS);
-                //return (!dfa.isHidden() && !dfa.isSystem());
-                return !Files.isHidden(file);
+                return (!dfa.isHidden() && !dfa.isSystem());
+                //return !Files.isHidden(file);
             } catch (Exception x) {
                 return false;
             }
