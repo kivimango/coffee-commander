@@ -12,8 +12,7 @@ import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.DosFileAttributes;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class WindowsFileSystemStrategy extends BaseModel implements FileSystemStrategy {
 
@@ -30,9 +29,7 @@ public class WindowsFileSystemStrategy extends BaseModel implements FileSystemSt
 
     @Override
     public List<CoffeeFile> getDirectoryContent(Path path) throws IOException {
-        if(!directoryContent.isEmpty()) {
-            directoryContent.clear();
-        }
+        List<CoffeeFile> directoryContent = new ArrayList<>();
 
         /*
         TO-DO : here we asking the file attributes twice, once in teh filter filter accept method, second
@@ -47,9 +44,11 @@ public class WindowsFileSystemStrategy extends BaseModel implements FileSystemSt
                         entry.getFileName().toString(), (Files.isDirectory(entry)) ? 0 : attr.size(),
                         simpleDate.format(attr.lastModifiedTime().toMillis()),
                         entry.toAbsolutePath().toString(),
-                       ""));
+                       "", Files.isDirectory(entry)));
             }
         }
+        //Collections.sort(directoryContent, fileComparator);
+        directoryContent.sort(fileComparator);
         return directoryContent;
     }
 

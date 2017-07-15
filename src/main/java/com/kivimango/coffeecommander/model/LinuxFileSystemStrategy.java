@@ -10,6 +10,8 @@ import java.nio.file.*;
 import java.nio.file.attribute.PosixFileAttributes;
 import java.nio.file.attribute.PosixFilePermissions;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class LinuxFileSystemStrategy extends BaseModel implements FileSystemStrategy {
@@ -26,9 +28,7 @@ public class LinuxFileSystemStrategy extends BaseModel implements FileSystemStra
 
     @Override
     public List<CoffeeFile> getDirectoryContent(Path path) throws IOException {
-        if(!directoryContent.isEmpty()) {
-            directoryContent.clear();
-        }
+        List<CoffeeFile> directoryContent = new ArrayList<>();
 
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
             for (Path entry: stream) {
@@ -37,9 +37,11 @@ public class LinuxFileSystemStrategy extends BaseModel implements FileSystemStra
                         entry.getFileName().toString(), attr.size(),
                         simpleDate.format(attr.lastModifiedTime().toMillis()),
                         entry.toAbsolutePath().toString(),
-                        PosixFilePermissions.toString(attr.permissions())));
+                        PosixFilePermissions.toString(attr.permissions()), Files.isDirectory(entry)));
                 }
             }
+        //Collections.sort(directoryContent, fileComparator);
+        directoryContent.sort(fileComparator);
         return directoryContent;
     }
 
