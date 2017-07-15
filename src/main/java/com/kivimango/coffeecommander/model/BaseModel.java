@@ -29,8 +29,13 @@ public class BaseModel {
     // Protected fields used by children classes.Do not remove them.
     SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
     FileIconConverter iconConverter = new FileIconConverter();
-    List<CoffeeFile> directoryContent = new ArrayList<>();
     Desktop desktop = Desktop.getDesktop();
+
+    /**
+     * Comparator class to sort file list by isDir property
+     */
+
+    FileComparator fileComparator = new FileComparator();
 
     protected void copy(CopyProgressDialog dialog, Path target, ObservableList<CoffeeFile> selectedItems, boolean overwrite,
                          boolean preserve) throws IOException {
